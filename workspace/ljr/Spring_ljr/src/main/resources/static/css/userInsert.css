@@ -8,7 +8,7 @@
 body {
     width: 100vw;
     height: 100vh;
-    overflow: hidden; /* 스크롤 제거 */
+    overflow: hidden;
     background: #ffffff;
 }
 
@@ -28,18 +28,16 @@ body {
     background: #1ABC9C;
 }
 
-/* 제목 */
 .signup-left h1 {
     font-size: 32px;
     font-weight: 700;
     margin-bottom: 30px;
 }
 
-/* 한 줄 레이아웃 */
 .row {
     display: flex;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 .row > label {
@@ -63,12 +61,14 @@ body {
     font-size: 14px;
 }
 
-.row-input input:focus,
-.row-input select:focus {
-    border-color: #1ABC9C;
+.row-error {
+    height: 18px;
+    margin-left: 120px;
+    font-size: 13px;
+    color: #d9534f;
+    margin-bottom: 5px;
 }
 
-/* 도메인 + 중복확인 배치 */
 .email-domain-row {
     display: flex;
     align-items: center;
@@ -85,26 +85,45 @@ body {
     cursor: pointer;
 }
 
-.msg-error {
-    font-size: 13px;
-    color: #d9534f;
-    margin-left: 120px;
-    margin-bottom: 10px;
+/* 라디오 숨김 */
+.goal-box input[type="radio"] {
+    display: none;
 }
 
-/* 목표 라디오 */
+/* 라디오 버튼 대신 박스 스타일 */
+.goal-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;       /* 가로 고정 */
+    height: 40px;      /* 세로 고정 */
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 14px;
+    color: #333;
+    transition: 0.2s;
+}
+
 .goal-box {
     display: flex;
-    gap: 20px;
+    gap: 10px;
 }
 
-.goal-box input[type="radio"] {
-    width: 14px;
-    height: 14px;
-    accent-color: #1ABC9C;
+/* 마우스오버 */
+.goal-option:hover {
+    border-color: #1ABC9C;
 }
 
-/* 회원가입 버튼 */
+/* 선택된 경우 스타일 */
+.goal-box input[type="radio"]:checked + .goal-option {
+    background-color: #1ABC9C;
+    color: #fff;
+    border-color: #1ABC9C;
+}
+
+
 .btn-join {
     width: 100%;
     height: 45px;
