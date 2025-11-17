@@ -1,107 +1,34 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>회원가입 - SaveUs</title>
-    <link rel="stylesheet" th:href="@{/css/userInsert.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
-    <script th:src="@{js/user.js}"></script>
+    <title>로그인 - SaveUs</title>
+    <link rel="stylesheet" th:href="@{/css/userLogin.css}">
 </head>
 
 <body>
-<main class="page-content" layout:fragment="content">
-<div class="signup-container">
 
-    <div class="signup-left">
+<div class="login-container">
+    <div class="login-card">
+        <h1>SaveUs</h1>
+        <p class="subtitle">로그인 후 서비스를 이용하세요</p>
 
-        <h1>Create an account</h1>
+        <form th:action="@{/login/proc}" th:object="${userLoginDto}" method="post">
 
-        <form th:action="@{/user/insert}" th:object="${userDto}" method="post" id="userJoinForm">
+            <label>이메일</label>
+            <input type="email" th:field="*{email}" placeholder="이메일 입력">
 
-            <!-- 이메일 -->
-            <div class="row">
-                <label>이메일</label>
-                <div class="row-input email-flex">
-                    <input type="text" id="emailId" placeholder="아이디" oninput="resetEmailCheck()">
-                    <span>@</span>
-                    <select id="emailDomain" onchange="resetEmailCheck()">
-                        <option value="">도메인</option>
-                        <option value="gmail.com">gmail.com</option>
-                        <option value="naver.com">naver.com</option>
-                        <option value="daum.net">daum.net</option>
-                    </select>
-                    <button type="button" class="btn-email" onclick="checkEmail()">중복확인</button>
-                </div>
-            </div>
-
-            <input type="hidden" id="emailInput" th:field="*{email}">
-            <div class="msg-error" id="emailCheckResult"></div>
-
-            <!-- 비밀번호 -->
-            <div class="row">
-                <label>비밀번호</label>
-                <div class="row-input">
-                    <input type="password" th:field="*{password}" placeholder="비밀번호 입력">
-                </div>
-            </div>
-
-            <!-- 닉네임 -->
-            <div class="row">
-                <label>닉네임</label>
-                <div class="row-input">
-                    <input type="text" th:field="*{nickname}" placeholder="닉네임 입력">
-                </div>
-            </div>
-
-            <!-- 생년월일 -->
-            <div class="row">
-                <label>생년월일</label>
-                <div class="row-input">
-                    <input type="date" th:field="*{birthdate}">
-                </div>
-            </div>
-
-            <!-- 키 -->
-            <div class="row">
-                <label>키(cm)</label>
-                <div class="row-input">
-                    <input type="number" step="0.1" th:field="*{height}">
-                </div>
-            </div>
-
-            <!-- 체중 -->
-            <div class="row">
-                <label>현재 체중(kg)</label>
-                <div class="row-input">
-                    <input type="number" step="0.1" th:field="*{currentWeight}">
-                </div>
-            </div>
-
-            <!-- 목표 -->
-            <div class="row">
-                <label>목표</label>
-                <div class="row-input goal-box">
-                    <label><input type="radio" th:field="*{mainGoal}" value="0"> 감량</label>
-                    <label><input type="radio" th:field="*{mainGoal}" value="1"> 증량</label>
-                    <label><input type="radio" th:field="*{mainGoal}" value="2"> 건강식</label>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-join">회원가입</button>
-
+            <label>비밀번호</label>
+            <input type="password" th:field="*{password}" placeholder="비밀번호 입력">
+            <p th:if="${loginError}" th:text="${loginError}" class="error-global"></p>
+            <button type="submit" class="btn-login">로그인</button>
         </form>
+        <div class="signup-link">
+            <a th:href="@{/join}">회원가입</a><span>|</span><a href="#">아이디/비밀번호 찾기</a>
+        </div>
 
     </div>
-
-
-    <div class="signup-right"></div>
-
 </div>
 
-
-<div th:replace="~{fragments/footer :: footer}"></div>
-</main>
 </body>
 </html>
