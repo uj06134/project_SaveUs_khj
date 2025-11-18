@@ -13,7 +13,12 @@
 </head>
 
 <main layout:fragment="content">
+    <script th:inline="javascript">
+        window.pwError = /*[[${pwError}]]*/ null;
+        window.pwSuccess = /*[[${pwSuccess}]]*/ null;
+    </script>
 
+    <script th:src="@{/js/profileEdit.js}"></script>
     <h2 class="edit-title">프로필 수정</h2>
     <p class="edit-sub">회원 정보를 변경합니다.</p>
 
@@ -147,7 +152,5 @@
         </form>
     </section>
 
-    <!-- 외부 스크립트 연결 -->
-    <script th:src="@{/js/profileEdit.js}"></script>
 </main>
 </html>
