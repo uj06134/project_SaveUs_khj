@@ -50,8 +50,13 @@
             <button class="add-meal-btn" onclick="location.href='/direct-input'">
                 직접 입력
             </button>
+            <div class="meal-search-area">
+                <input type="text" id="mealSearchInput" placeholder="음식명 검색">
+                <button id="mealAddBtn">추가</button>
+            </div>
         </div>
     </section>
+
 
     <!-- 오늘의 식사 + 영양 요약 -->
     <div class="stats-section">
@@ -133,5 +138,7 @@
     </section>
 
 </main>
-
+<th:block layout:fragment="script">
+    <script src="/js/foodAdd.js"></script>
+</th:block>
 </html>

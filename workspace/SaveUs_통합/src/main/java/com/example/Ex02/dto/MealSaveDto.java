@@ -7,6 +7,11 @@ public class MealSaveDto {
     private Integer carbs;
     private Integer protein;
     private Integer fat;
+    private Integer sugar;
+    private Integer fiber;
+    private Integer calcium;
+    private Integer sodium;
+    private Long userId;
 
     public String getMealName() {
         return mealName;
@@ -55,4 +60,39 @@ public class MealSaveDto {
     public void setFat(Integer fat) {
         this.fat = fat;
     }
+
+    public Integer getSugar() {
+        return sugar;
+    }
+
+    public void setSugar(Integer sugar) {
+        this.sugar = sugar;
+    }
+
+    public Integer getFiber() {
+        return fiber;
+    }
+
+    public void setFiber(Integer fiber) {
+        this.fiber = fiber;
+    }
+
+    public Integer getCalcium() {
+        return calcium;
+    }
+
+    public void setCalcium(Integer calcium) {
+        this.calcium = calcium;
+    }
+
+    public Integer getSodium() {
+        return sodium;
+    }
+
+    public void setSodium(Integer sodium) {
+        this.sodium = sodium;
+    }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 }

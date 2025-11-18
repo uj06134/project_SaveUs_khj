@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -110,6 +112,46 @@ public class MealController {
         mealMapper.deleteMeal(id);
         return "redirect:/dashboard";
     }
+
+    // 검색해서 추가
+    @PostMapping("/meal/add-from-food")
+    @ResponseBody
+    public String addMealFromFood(@RequestBody MealSaveDto dto, HttpSession session) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) return "NOT_LOGIN";
+
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+        LocalDateTime eatDateTime = LocalDateTime.of(today, now);
+
+        String eatTimeFormatted = eatDateTime.format(
+                java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+        map.put("mealName", dto.getMealName());
+        map.put("eatTime", eatTimeFormatted);
+
+        map.put("calories", dto.getCalories());
+        map.put("carbs", dto.getCarbs());
+        map.put("protein", dto.getProtein());
+        map.put("fat", dto.getFat());
+
+        // 추가된 4개 영양소
+        map.put("sugar", dto.getSugar());
+        map.put("fiber", dto.getFiber());
+        map.put("calcium", dto.getCalcium());
+        map.put("sodium", dto.getSodium());
+
+        mealMapper.saveMeal(map);
+
+        return "OK";
+    }
+
+
+
 
 
 }

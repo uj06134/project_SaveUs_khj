@@ -19,4 +19,5 @@ public interface MealMapper {
 
     void deleteMeal(Long entryId);
 
+
 }
