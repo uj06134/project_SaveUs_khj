@@ -6,6 +6,7 @@
 <div layout:fragment="content">
 
     <link rel="stylesheet" th:href="@{/css/challenges.css}">
+    <script defer th:src="@{/js/challenges.js}"></script>
 
     <div class="challenge-hub-container">
 
@@ -15,143 +16,156 @@
                 <p>"나만의 식단 챌린지에 도전하고, 멋진 배지도 모아보세요!"</p>
             </header>
 
-            <section class="challenge-section ai-recommendations">
-                <h2>AI가 추천하는 맞춤형 챌린지</h2>
-                <p>AI가 분석한 맞춤형 챌린지를 시작해보세요.</p>
+            <nav class="challenge-tabs">
+                <button type="button" class="tab-btn active" data-tab="my-challenges-tab">나의 챌린지</button>
+                <button type="button" class="tab-btn" data-tab="explore-tab">둘러보기</button>
+            </nav>
 
-                <div class="challenge-carousel">
-                    <div class="challenge-card">
-                        <img src="/images/challenges/heart-boost.png" alt="Challenge Image" class="card-image">
-                        <div class="card-content">
-                            <h3>Heart Health Boost</h3>
-                            <p>Moderate heart-healthy foods.</p>
-                            <div class="tags">
-                                <span class="tag">Nutrition</span>
-                                <span class="tag">Intermediate</span>
-                            </div>
-                        </div>
-                        <a href="#" class="btn-join">참여하기</a>
+            <div id="my-challenges-tab" class="tab-content active">
+
+                <section class="my-challenge-summary">
+                    <div class="summary-card card">
+                        <span>진행중 챌린지</span>
+                        <strong th:text="${summary.activeCount}">0</strong>
+                    </div>
+                    <div class="summary-card card">
+                        <span>완료 챌린지</span>
+                        <strong th:text="${summary.completedCount}">0</strong>
+                    </div>
+                    <div class="summary-card card">
+                        <span>총 획득 포인트</span>
+                        <strong th:text="${summary.totalPoints}">0</strong>
+                    </div>
+                </section>
+
+                <section class="my-challenge-list challenge-section">
+                    <h2>진행중인 챌린지</h2>
+
+                    <div class="empty-list" th:if="${#lists.isEmpty(ongoingChallenges)}">
+                        <p>현재 진행중인 챌린지가 없습니다.</p>
+                        <button type="button" class="btn-explore-now" data-tab="explore-tab">지금 챌린지 둘러보기</button>
                     </div>
 
-                    <div class="challenge-card">
-                        <img src="/images/challenges/vegan-prep.png" alt="Challenge Image" class="card-image">
-                        <div class="card-content">
-                            <h3>Vegetarian Prep</h3>
-                            <p>Transition to a plant-based diet.</p>
-                            <div class="tags">
-                                <span class="tag">Vegan</span>
-                                <span class="tag">Meal Prep</span>
+                    <div class="challenge-progress-list">
+                        <div class="progress-card card" th:each="challenge : ${ongoingChallenges}">
+                            <img th:src="${challenge.imageUrl != null ? challenge.imageUrl : '/images/challenges/default.png'}" alt="Challenge Icon" class="item-image-small">
+                            <div class="progress-content">
+                                <h3 th:text="${challenge.title}">Challenge Title</h3>
+                                <p th:text="${challenge.description}">Challenge Description</p>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" th:style="'width: ' + ${challenge.progressPercent} + '%;'"></div>
+                                </div>
+                                <span class="progress-text" th:text="${challenge.progressPercent} + '%'">75%</span>
                             </div>
                         </div>
-                        <a href="#" class="btn-join">참여하기</a>
                     </div>
 
-                    <div class="challenge-card">
-                        <img src="/images/challenges/weight-loss.png" alt="Challenge Image" class="card-image">
-                        <div class="card-content">
-                            <h3>Weight Loss Kickstart</h3>
-                            <p>7-day low-carb meal plan.</p>
-                            <div class="tags">
-                                <span class="tag">Weight Loss</span>
-                                <span class="tag">Low Carb</span>
-                            </div>
-                        </div>
-                        <a href="#" class="btn-join disabled">진행중</a> </div>
-
-                </div>
-            </section>
-
-            <section class="challenge-section all-challenges">
-                <h2>전체 챌린지 둘러보기</h2>
-
-                <div class="filter-controls">
-                    <form action="/challenges" method="get" class="filter-form">
-                        <input type="search" name="keyword" placeholder="원하는 챌린지 검색..." class="search-input">
-                        <div class="tag-filters">
-                            <button type="submit" name="tag" value="" class="active">All</button>
-                            <button type="submit" name="tag" value="Weight Loss">Weight Loss</button>
-                            <button type="submit" name="tag" value="Muscle Gain">Muscle Gain</button>
-                            <button type="submit" name="tag" value="Vegan">Vegan</button>
-                            <button type="submit" name="tag" value="Hydration">Hydration</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="challenge-list">
-                    <div class="challenge-list-item">
-                        <img src="/images/challenges/hydration.png" alt="Challenge Image" class="item-image">
-                        <div class="item-content">
-                            <h3>Hydration Hero</h3>
-                            <p>Track your water intake for 7 days and reach your daily goal.</p>
-                            <div class="tags">
-                                <span class="tag">Hydration</span>
-                            </div>
-                        </div>
-                        <a href="#" class="btn-join">참여하기</a>
+                    <h2>완료된 챌린지</h2>
+                    <div class="empty-list" th:if="${#lists.isEmpty(completedChallenges)}">
+                        <p>아직 완료한 챌린지가 없습니다.</p>
                     </div>
-                    <div class="challenge-list-item">
-                        <img src="/images/challenges/mindful-muncher.png" alt="Challenge Image" class="item-image">
-                        <div class="item-content">
-                            <h3>Mindful Muncher</h3>
-                            <p>Log 3 consecutive mindful meals, focusing on satisfaction.</p>
-                            <div class="tags">
-                                <span class="tag">Mindfulness</span>
+                    <div class="challenge-progress-list">
+                        <div class="progress-card card completed" th:each="challenge : ${completedChallenges}">
+                            <img th:src="${challenge.imageUrl != null ? challenge.imageUrl : '/images/challenges/default.png'}" alt="Challenge Icon" class="item-image-small">
+                            <div class="progress-content">
+                                <h3 th:text="${challenge.title}">Completed Challenge</h3>
+                                <p th:text="${challenge.description}">Description</p>
                             </div>
+                            <span class="badge-icon">🏆</span>
                         </div>
-                        <a href="#" class="btn-join">참여하기</a>
                     </div>
-                    <div class="challenge-list-item">
-                        <img src="/images/challenges/green-giant.png" alt="Challenge Image" class="item-image">
-                        <div class="item-content">
-                            <h3>Green Giant</h3>
-                            <p>Include a portion of green vegetables in every meal for 3 days.</p>
-                            <div class="tags">
-                                <span class="tag">Vegan</span>
-                            </div>
-                        </div>
-                        <a href="#" class="btn-join">참여하기</a>
-                    </div>
-                </div>
+                </section>
+            </div>
 
-                <nav class="pagination">
-                    <a href="#" class="disabled">Previous</a>
-                    <a href="#" class="active">1</a>
-                    <a href="#">2</a>
-                    <a href="#">Next</a>
-                </nav>
-            </section>
+            <div id="explore-tab" class="tab-content">
+
+                <section class="challenge-section ai-recommendations">
+                    <h2>AI가 추천하는 맞춤형 챌린지</h2>
+                    <p>AI가 분석한 맞춤형 챌린지를 시작해보세요.</p>
+                    <div class="challenge-carousel">
+                        <div class="challenge-card" th:each="challenge : ${aiRecommendedChallenges}">
+                            <img th:src="${challenge.imageUrl != null ? challenge.imageUrl : '/images/challenges/default.png'}" alt="Challenge Image" class="card-image">
+                            <div class="card-content">
+                                <h3 th:text="${challenge.title}">Heart Health Boost</h3>
+                                <p th:text="${challenge.description}">Moderate heart-healthy foods.</p>
+                                <div class="tags">
+                                    <span class="tag" th:each="tag : ${challenge.tags}" th:if="${tag != null}" th:text="${tag.tagName}">Nutrition</span>
+                                </div>
+                            </div>
+                            <a href="#" class="btn-join" th:if="${!challenge.isUserParticipating()}">참여하기</a>
+                            <a href="#" class="btn-join disabled" th:if="${challenge.isUserParticipating()}">진행중</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="challenge-section all-challenges">
+                    <h2>전체 챌린지 둘러보기</h2>
+                    <div class="filter-controls">
+                        <form action="/challenges" method="get" class="filter-form">
+                            <input type="search" name="keyword" placeholder="원하는 챌린지 검색..." class="search-input" th:value="${currentKeyword}">
+                            <div class="tag-filters">
+                                <button type="submit" name="tag" value="" th:classappend="${currentTag == null ? 'active' : ''}">All</button>
+                                <button type="submit" name="tag" th:each="tag : ${allTags}"
+                                        th:value="${tag.tagName}"
+                                        th:text="${tag.tagName}"
+                                        th:classappend="${currentTag == tag.tagName ? 'active' : ''}">
+                                    Weight Loss
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="challenge-list">
+                        <div class="challenge-list-item" th:each="challenge : ${challengePage.challenges}">
+                            <img th:src="${challenge.imageUrl != null ? challenge.imageUrl : '/images/challenges/default.png'}" alt="Challenge Image" class="item-image">
+                            <div class="item-content">
+                                <h3 th:text="${challenge.title}">Hydration Hero</h3>
+                                <p th:text="${challenge.description}">Track your water intake...</p>
+                                <div class="tags">
+                                    <span class="tag" th:each="tag : ${challenge.tags}" th:if="${tag != null}" th:text="${tag.tagName}">Hydration</span>
+                                </div>
+                            </div>
+                            <a href="#" class="btn-join" th:if="${!challenge.isUserParticipating()}">참여하기</a>
+                            <a href="#" class="btn-join disabled" th:if="${challenge.isUserParticipating()}">진행중</a>
+                        </div>
+                    </div>
+
+                    <nav class="pagination" th:if="${challengePage.totalPages > 1}">
+                        <a th:href="@{/challenges(page=${challengePage.currentPage - 1}, keyword=${currentKeyword}, tag=${currentTag})}"
+                           th:classappend="${challengePage.currentPage == 1 ? 'disabled' : ''}">Previous</a>
+
+                        <th:block th:each="i : ${#numbers.sequence(1, challengePage.totalPages)}">
+                            <a th:href="@{/challenges(page=${i}, keyword=${currentKeyword}, tag=${currentTag})}"
+                               th:text="${i}"
+                               th:classappend="${challengePage.currentPage == i ? 'active' : ''}">1</a>
+                        </th:block>
+
+                        <a th:href="@{/challenges(page=${challengePage.currentPage + 1}, keyword=${currentKeyword}, tag=${currentTag})}"
+                           th:classappend="${challengePage.currentPage == challengePage.totalPages ? 'disabled' : ''}">Next</a>
+                    </nav>
+                </section>
+            </div>
         </div>
 
         <aside class="leaderboard">
             <h3>Leaderboard</h3>
             <h4>최근 챌린지 완료 랭킹</h4>
+
             <ul>
-                <li>
-                    <span class="rank">1</span>
-                    <img src="/images/avatars/avatar1.png" alt="User Avatar" class="avatar">
-                    <span class="username">SaveUs-Fit</span>
-                    <span class="score">1326점</span>
-                </li>
-                <li>
-                    <span class="rank">2</span>
-                    <img src="/images/avatars/avatar2.png" alt="User Avatar" class="avatar">
-                    <span class="username">HealthyMike</span>
-                    <span class="score">1105점</span>
-                </li>
-                <li>
-                    <span class="rank">3</span>
-                    <img src="/images/avatars/avatar3.png" alt="User Avatar" class="avatar">
-                    <span class="username">VeggieQueen</span>
-                    <span class="score">980점</span>
-                </li>
-                <li>
-                    <span class="rank">4</span>
-                    <img src="/images/avatars/avatar4.png" alt="User Avatar" class="avatar">
-                    <span class="username">NutriNerd</span>
-                    <span class="score">900점</span>
+                <li th:each="entry, iterStat : ${leaderboard}">
+                    <span class="rank" th:text="${iterStat.count}">1</span>
+                    <img th:src="${entry.userProfileImg != null ? entry.userProfileImg : '/images/avatars/default.png'}" alt="User Avatar" class="avatar">
+                    <span class="username" th:text="${entry.userNickname}">SaveUs-Fit</span>
+                    <span class="score" th:text="${entry.score} + '점'">1326점</span>
                 </li>
             </ul>
+            <div class="empty-list" th:if="${#lists.isEmpty(leaderboard)}">
+                <p>랭킹 정보가 없습니다.</p>
+            </div>
+
             <a href="/leaderboard" class="btn-view-all">전체 순위 보기</a>
         </aside>
 
-    </div> </div> </html>
+    </div>
+</div>
+</html>

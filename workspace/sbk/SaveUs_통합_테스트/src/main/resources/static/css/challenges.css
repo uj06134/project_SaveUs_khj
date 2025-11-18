@@ -422,3 +422,182 @@
 .leaderboard .btn-view-all:hover {
     background-color: #d1f3e9;
 }
+
+/* =================================================================
+   5. [신규] 탭 버튼 스타일
+   ================================================================= */
+.challenge-tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--color-border, #dee2e6);
+    margin-bottom: 16px; /* 탭과 컨텐츠 사이 간격 */
+}
+
+.challenge-tabs .tab-btn {
+    /* community.css의 .filter-tab 스타일 재사용 */
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-secondary, #6c757d);
+    padding: 12px 20px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+}
+
+.challenge-tabs .tab-btn.active {
+    color: var(--color-primary, #1abc9c);
+    border-bottom-color: var(--color-primary, #1abc9c);
+}
+
+/* 탭 컨텐츠 (기본 숨김) */
+.tab-content {
+    display: none;
+    flex-direction: column;
+    gap: 24px; /* 섹션 간 간격 */
+}
+/* 활성화된 탭만 보임 */
+.tab-content.active {
+    display: flex;
+}
+
+
+/* =================================================================
+   6. [신규] "나의 챌린지" 탭 스타일 (image_d1074d.png)
+   ================================================================= */
+
+/* 1-1. 상단 요약 카드 */
+.my-challenge-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+.summary-card {
+    /* .card 스타일 상속 */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.summary-card span {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-secondary, #6c757d);
+}
+.summary-card strong {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text-primary, #343a40);
+}
+
+/* 1-2. 챌린지 목록 */
+.my-challenge-list h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--color-text-primary, #343a40);
+}
+
+.challenge-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.progress-card {
+    /* .card 스타일 상속 */
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.progress-card .item-image-small {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.progress-card .progress-content {
+    flex-grow: 1;
+}
+
+.progress-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-primary, #343a40);
+}
+.progress-card p {
+    font-size: 14px;
+    color: var(--color-text-secondary, #6c757d);
+    margin-top: 4px;
+}
+
+/* 진행률 바 */
+.progress-bar-container {
+    width: 100%;
+    height: 12px;
+    background-color: var(--color-bg-app, #f8f9fa);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+.progress-bar {
+    height: 100%;
+    background-color: var(--color-primary, #1abc9c);
+    border-radius: 6px;
+    transition: width 0.3s ease;
+}
+.progress-content {
+    position: relative;
+    padding-right: 50px; /* 진행률 텍스트 공간 */
+}
+.progress-text {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-primary, #1abc9c);
+}
+
+/* 완료된 챌린지 */
+.progress-card.completed h3 {
+    color: var(--color-text-secondary, #6c757d);
+}
+.progress-card .badge-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+/* 챌린지가 없을 때 */
+.empty-list {
+    text-align: center;
+    padding: 40px;
+    background-color: var(--color-bg-app, #f8f9fa);
+    border-radius: 8px;
+    margin-top: 20px;
+}
+.empty-list p {
+    font-size: 16px;
+    color: var(--color-text-secondary, #6c757d);
+}
+.btn-explore-now {
+    /* .btn-join 스타일 재사용 */
+    background-color: var(--color-primary, #1abc9c);
+    color: var(--color-white, #ffffff);
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 16px;
+}
+.btn-explore-now:hover {
+    background-color: #178a71;
+}
