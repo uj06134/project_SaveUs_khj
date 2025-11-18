@@ -132,10 +132,12 @@ public class UserController {
         Long userId = (Long) session.getAttribute("userId");
         userDto.setUserId(userId);
 
-        // 기존 이미지 유지
+        // 기존 DB 값 불러오기
         UserJoinDto originUser = userMapper.findById(userId);
+        if (originUser == null) return "redirect:/login";
 
         try {
+            // 1) 이미지 업로드한 경우
             if (profileImage != null && !profileImage.isEmpty()) {
 
                 String uploadDir = "C:/uploads/profile/";
@@ -143,21 +145,38 @@ public class UserController {
                 if (!folder.exists()) folder.mkdirs();
 
                 String fileName = UUID.randomUUID() + "_" + profileImage.getOriginalFilename();
-                File filePath = new File(uploadDir + fileName);
-                profileImage.transferTo(filePath);
+                File uploadPath = new File(uploadDir + fileName);
+                profileImage.transferTo(uploadPath);
 
-                String dbPath = "C:/uploads/profile/" + fileName;
-                userDto.setProfileImageUrl(dbPath);
+                // DB에는 웹 경로 저장
+                userDto.setProfileImageUrl("/uploads/profile/" + fileName);
+
             } else {
-                // 🔥 이미지 변경하지 않았다면 기존 이미지 유지
-                userDto.setProfileImageUrl(originUser.getProfileImageUrl());
+                // 2) 이미지 업로드 안한 경우 → 기존 거 유지
+                String oldPath = originUser.getProfileImageUrl();
+
+                // DB에 절대경로로 저장된 적이 있다면 변환
+                if (oldPath != null && oldPath.startsWith("C:/uploads")) {
+                    oldPath = oldPath.replace("C:/uploads", "/uploads");
+                }
+
+                // null이면 기본 이미지
+                if (oldPath == null || oldPath.isEmpty()) {
+                    oldPath = "/images/icon/mypage.png";
+                }
+
+                userDto.setProfileImageUrl(oldPath);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         userMapper.updateUser(userDto);
         return "redirect:/my-page";
     }
+
+
 
     // 로그아웃
     @GetMapping("/logout")
@@ -189,22 +208,29 @@ public class UserController {
             HttpSession session,
             RedirectAttributes redirectAttributes
     ) {
+        // 로그인 안 한 경우
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return "redirect:/login";
 
+
+
+        // 새 비밀번호 제확인 불일치 => 에러메시지 html에 전달 => js로 전달 후 alert
         if (!newPassword.equals(confirmPassword)) {
             redirectAttributes.addFlashAttribute("pwError", "새 비밀번호가 일치하지 않습니다.");
             return "redirect:/profile/edit";
         }
 
+        // DB에서 현재 비밀번호 체크
         int checkPw = userMapper.checkPassword(userId, currentPassword);
         if (checkPw == 0) {
             redirectAttributes.addFlashAttribute("pwError", "현재 비밀번호가 일치하지 않습니다.");
             return "redirect:/profile/edit";
         }
 
+        // 비밀번호 변경 실행
         userMapper.updatePassword(userId, newPassword);
 
+        // 성공 알림
         redirectAttributes.addFlashAttribute("pwSuccess", "비밀번호가 성공적으로 변경되었습니다.");
         return "redirect:/profile/edit";
     }
