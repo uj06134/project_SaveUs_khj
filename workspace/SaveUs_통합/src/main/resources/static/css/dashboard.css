@@ -257,3 +257,49 @@ main {
     border-radius: 16px;
     height: 320px;
 }
+
+.meal-search-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#mealSearchInput {
+    width: 200px;
+    height: 48px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+#mealSearchBtn {
+    height: 48px;
+    padding: 0 18px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.meal-search-result {
+    margin-top: 8px;
+    width: 330px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: none;
+    position: absolute;
+    z-index: 99;
+}
+
+.meal-search-result .item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.meal-search-result .item:hover {
+    background: #f1f1f1;
+}
