@@ -18,6 +18,4 @@ public interface MealMapper {
     List<MealDto> findTodayMeals(Long userId);
 
     void deleteMeal(Long entryId);
-
-
 }
