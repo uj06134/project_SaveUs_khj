@@ -176,3 +176,20 @@ input:focus {
     padding: 0 4px;
     user-select: none;
 }
+
+.sw-btn {
+    background: #1ABC9C;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    min-width: 120px;
+    transition: 0.15s;
+}
+
+.sw-btn:hover {
+    background: #159E84;
+}
