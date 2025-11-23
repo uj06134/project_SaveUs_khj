@@ -153,7 +153,6 @@ public class UserController {
         if (originUser == null) return "redirect:/login";
 
         try {
-            // EC2 서버 절대경로로 고정
             String uploadDir = "/home/ubuntu/uploads/profile/";
             File folder = new File(uploadDir);
             if (!folder.exists()) folder.mkdirs();
@@ -164,17 +163,13 @@ public class UserController {
                 File uploadPath = new File(uploadDir + fileName);
                 profileImage.transferTo(uploadPath);
 
+                // 새 이미지 URL 저장
                 userDto.setProfileImageUrl("/uploads/profile/" + fileName);
 
             } else {
-                // 기존 이미지 유지
-                String oldPath = originUser.getProfileImageUrl();
 
-                if (oldPath == null || oldPath.isEmpty()) {
-                    oldPath = "/images/icon/mypage.png";
-                }
-
-                userDto.setProfileImageUrl(oldPath);
+                // 업로드 없으면 기존 이미지 그대로 유지
+                userDto.setProfileImageUrl(originUser.getProfileImageUrl());
             }
 
         } catch (Exception e) {

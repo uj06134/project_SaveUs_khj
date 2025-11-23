@@ -103,21 +103,21 @@
     <update id="updateUser" parameterType="com.example.Ex02.dto.UserJoinDto">
         UPDATE USERS
         <set>
+            PROFILE_IMAGE_URL = #{profileImageUrl},
 
-            <if test="profileImageUrl != null and profileImageUrl != ''">
-                PROFILE_IMAGE_URL = #{profileImageUrl},
-            </if>
             <if test="height != null">
                 HEIGHT = #{height},
             </if>
+
             <if test="currentWeight != null">
                 CURRENT_WEIGHT = #{currentWeight},
             </if>
+
             <if test="mainGoal != null">
                 MAIN_GOAL = #{mainGoal},
             </if>
-            BMI = #{bmi}
 
+            BMI = #{bmi}
         </set>
         WHERE USER_ID = #{userId}
     </update>
