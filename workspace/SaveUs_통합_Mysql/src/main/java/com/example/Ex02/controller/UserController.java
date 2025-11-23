@@ -155,7 +155,7 @@ public class UserController {
         try {
             if (profileImage != null && !profileImage.isEmpty()) {
 
-                String uploadDir = "C:/uploads/profile/";
+                String uploadDir = System.getProperty("user.dir") + "/uploads/profile/";
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
 
@@ -168,13 +168,15 @@ public class UserController {
             } else {
                 String oldPath = originUser.getProfileImageUrl();
 
-                if (oldPath != null && oldPath.startsWith("C:/uploads")) {
+                if (oldPath != null && oldPath.startsWith("C:/")) {
                     oldPath = oldPath.replace("C:/uploads", "/uploads");
                 }
 
+                // DB에 값이 없으면 기본 이미지
                 if (oldPath == null || oldPath.isEmpty()) {
                     oldPath = "/images/icon/mypage.png";
                 }
+
 
                 userDto.setProfileImageUrl(oldPath);
             }
