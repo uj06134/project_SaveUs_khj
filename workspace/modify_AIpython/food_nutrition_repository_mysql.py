@@ -1,7 +1,5 @@
 from typing import Optional
 import mysql.connector
-from typing import Optional
-
 
 def get_food_nutrition_by_name(food_name: str) -> Optional[dict]:
     try:
@@ -10,7 +8,7 @@ def get_food_nutrition_by_name(food_name: str) -> Optional[dict]:
             user="root",
             password="3306",
             database="saveus",
-            charset = "utf8"
+            charset="utf8"
         )
         cursor = conn.cursor()
 
@@ -25,7 +23,7 @@ def get_food_nutrition_by_name(food_name: str) -> Optional[dict]:
         if not row:
             return None
 
-        columns = [desc[0] for desc in cursor.description]  # 대문자 그대로 유지
+        columns = [desc[0].lower() for desc in cursor.description]
         return dict(zip(columns, row))
 
     except Exception as e:
@@ -36,7 +34,6 @@ def get_food_nutrition_by_name(food_name: str) -> Optional[dict]:
             cursor.close()
         if conn:
             conn.close()
-
 
 
 if __name__ == "__main__":
