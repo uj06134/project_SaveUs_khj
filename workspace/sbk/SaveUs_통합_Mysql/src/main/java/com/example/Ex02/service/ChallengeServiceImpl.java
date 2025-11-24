@@ -198,6 +198,24 @@ public class ChallengeServiceImpl implements ChallengeService {
                 System.out.println("에러 발생 (ID: " + uc.getUserChallengeId() + ") - " + e.getMessage());
             }
         }
+
+        System.out.println(">>> 당뇨 점수계산 시작: 데이터 조회 시도");
+        //당뇨 점수 계산
+        List<DiabetesScoreDto> dtoList = mealMapper.selectYesterdayNutritionForAllUsers();
+        System.out.println(">>> [2] 조회된 유저 수: " + dtoList.size() + "명");
+        if (dtoList.isEmpty()) {
+            System.out.println(">>> [종료] 조회된 데이터가 0건이라 종료합니다. (날짜나 DB 데이터 확인 필요)");
+            return;
+        }
+        // 2. 파이썬 서버에 계산 요청
+        System.out.println(">>> [3] 파이썬 서버로 요청 전송 중...");
+        List<DiabetesScoreDto> results = aiFoodService.calculateDietScores(dtoList);
+        System.out.println(">>> [4] 파이썬 응답 도착. 결과 수: " + results.size());
+        // 3. DB 저장
+        for (DiabetesScoreDto res : results) {
+            if (res.getError() != null) continue;
+            mealMapper.insertDiabetesScore(res); // 이름 바뀐 메서드 호출
+        }
     }
 
     // 한 건만 처리
@@ -269,17 +287,6 @@ public class ChallengeServiceImpl implements ChallengeService {
             challengeMapper.failChallenge(uc.getUserChallengeId());
         }
 
-        //당뇨 점수 계산
-        List<DiabetesScoreDto> dtoList = mealMapper.selectYesterdayNutritionForAllUsers();
-
-        // 2. 파이썬 서버에 계산 요청
-        List<DiabetesScoreDto> results = aiFoodService.calculateDietScores(dtoList);
-
-        // 3. DB 저장
-        for (DiabetesScoreDto res : results) {
-            if (res.getError() != null) continue;
-            mealMapper.insertDiabetesScore(res); // 이름 바뀐 메서드 호출
-        }
     }
 
     // MealDto의 Integer 값을 double로 안전하게 변환하여 리턴
