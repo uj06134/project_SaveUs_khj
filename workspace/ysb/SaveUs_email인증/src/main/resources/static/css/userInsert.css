@@ -277,7 +277,7 @@ button[type="submit"]:hover {
 .hidden { display: none; }
 .disabled-input { background-color: #f0f0f0; color: #888; }
 
-/* 로딩 스피너 스타일 */
+/* 로딩 스피너 스타일 (미출력 중) */
 .loader {
     border: 3px solid #f3f3f3;
     border-radius: 50%;
@@ -291,7 +291,6 @@ button[type="submit"]:hover {
     margin-left: 10px;
 }
 
-/* 로딩 중일 때 숨김 처리용 클래스 */
 .hidden { display: none; }
 
 @keyframes spin {
@@ -299,7 +298,6 @@ button[type="submit"]:hover {
     100% { transform: rotate(360deg); }
 }
 
-/* 버튼 비활성화 스타일 */
 button:disabled {
     background-color: #ccc !important;
     cursor: not-allowed;
