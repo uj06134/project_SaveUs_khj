@@ -48,6 +48,8 @@ public class UserJoinDto {
     private LocalDateTime createdAt;
     private float bmi;
 
+    private String emailVerified;
+
     public float getBmi() {
         if (height == null || currentWeight == null || height == 0) {
             return 0f;
@@ -99,4 +101,6 @@ public class UserJoinDto {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
+    public String getEmailVerified() { return emailVerified; }
+    public void setEmailVerified(String emailVerified) { this.emailVerified = emailVerified; }
 }
