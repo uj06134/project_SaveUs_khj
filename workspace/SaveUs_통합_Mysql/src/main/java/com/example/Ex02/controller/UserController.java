@@ -90,14 +90,58 @@ public class UserController {
     public String insertUser(
             @Valid @ModelAttribute("userDto") UserJoinDto userJoinDto,
             BindingResult bindingResult,
-            HttpSession session) {
+            HttpSession session,
+            Model model) {
 
         if (bindingResult.hasErrors()) {
             return "user/userInsert";
         }
 
+        String verifiedEmail = (String) session.getAttribute("verifiedEmail");
+        if (verifiedEmail == null || !verifiedEmail.equals(userJoinDto.getEmail())) {
+            model.addAttribute("globalError", "이메일 인증이 필요합니다.");
+            return "user/userInsert";
+        }
+
+        userJoinDto.setEmailVerified("Y");
+
+        // 세션에서 인증 정보 제거
+        session.removeAttribute("joinToken");
+        session.removeAttribute("joinEmail");
+        session.removeAttribute("joinExpireTime");
+        session.removeAttribute("verifiedEmail");
+
         session.setAttribute("tempUser", userJoinDto);
         return "redirect:/survey";
+    }
+
+
+    /* -------------------------------
+   메일 인증
+   ------------------------------- */
+    @GetMapping("/user/send-verification")
+    @ResponseBody
+    public String sendJoinVerification(@RequestParam("email") String email, HttpSession session) {
+        if (userMapper.countByEmail(email) > 0) {
+            return "duplicate";
+        }
+        userService.sendJoinVerificationMail(email, session);
+        return "sent";
+    }
+
+    @GetMapping("/user/verify-code")
+    @ResponseBody
+    public String verifyJoinToken(
+            @RequestParam("email") String email,
+            @RequestParam("code") String code,
+            HttpSession session) {
+
+        boolean isVerified = userService.verifyJoinToken(email, code, session);
+        if (isVerified) {
+            return "ok";
+        } else {
+            return "fail";
+        }
     }
 
 
