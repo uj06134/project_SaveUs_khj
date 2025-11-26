@@ -23,7 +23,6 @@ public class CommunityController {
 
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
-            //userId = 0L; // 비로그인 사용자는 0L로 처리 (게시물 좋아요 상태 확인용)
             return "redirect:/login";
         }
 
@@ -31,13 +30,13 @@ public class CommunityController {
         Object postList = communityService.getPostList(userId, null);
         Object trendingList = communityService.getTrendingList();
 
-        // 3. 페르소나 목록 조회
+        // 페르소나 목록 조회
         List<String> personaList = communityService.getDistinctPersonas();
 
         // 모델에 데이터 추가
         model.addAttribute("postList", postList);
         model.addAttribute("trendingList", trendingList);
-        model.addAttribute("personaList", personaList); // [신규] 페르소나 목록 추가
+        model.addAttribute("personaList", personaList); // 페르소나 목록 추가
         model.addAttribute("postRequestDto", new PostRequestDto()); // 폼을 위한 빈 객체
         model.addAttribute("currentUserId", userId); // JS에서 사용할 현재 유저 ID
 

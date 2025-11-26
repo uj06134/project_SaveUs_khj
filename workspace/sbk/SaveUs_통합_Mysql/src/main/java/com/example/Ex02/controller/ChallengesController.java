@@ -74,7 +74,7 @@ public class ChallengesController {
             @PathVariable Long challengeId,
             @SessionAttribute(name = "userId", required = false) Long userId
     ) {
-        // 로그인 체크 (없으면 로그인 페이지로 튕겨내기)
+        // 로그인 체크
         if (userId == null) {
             return "redirect:/login";
         }

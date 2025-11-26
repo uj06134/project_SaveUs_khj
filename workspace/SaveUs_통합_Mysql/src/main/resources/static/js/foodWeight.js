@@ -126,6 +126,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-/*>>>>>>> 080c5a1fb9c77516502857370f33bc5d8c8126b9:workspace/SaveUs_통합_Mysql/src/main/resources/static/js/todayWeight.js*/
 
 

@@ -8,6 +8,12 @@ public class CalendarScoreDto {
     private LocalDate scoreDate;      // 날짜
     private Integer score;            // 건강 점수
     private String statusMessage;     // 상태 메시지
+    private Double weight;
+
+    public Double getWeight() { return weight;}
+
+    public void setWeight(Double weight) {this.weight = weight;}
+
 
     public LocalDate getScoreDate() {
         return scoreDate;

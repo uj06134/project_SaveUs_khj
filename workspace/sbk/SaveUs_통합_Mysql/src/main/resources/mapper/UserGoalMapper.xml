@@ -34,6 +34,11 @@
         #{carbsG},
         #{fatsG}
         )
+        ON DUPLICATE KEY UPDATE
+        CALORIES_KCAL = #{caloriesKcal},
+        PROTEIN_G = #{proteinG},
+        CARBS_G = #{carbsG},
+        FATS_G = #{fatsG}
     </insert>
 
 </mapper>

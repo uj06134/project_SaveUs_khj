@@ -22,6 +22,7 @@ public class ReportApiController {
             HttpSession session) {
 
         Long userId = (Long) session.getAttribute("userId");
+        System.out.println(userId);
         if (userId == null) return ResponseEntity.status(401).build();
 
         if (date == null || date.isEmpty()) {

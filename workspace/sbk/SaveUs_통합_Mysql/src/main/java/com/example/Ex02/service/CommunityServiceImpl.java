@@ -57,7 +57,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     @Transactional
     public void createPost(PostRequestDto postRequestDto, Long currentUserId) throws IOException {
-        // 1. DTO 생성 및 텍스트 정보 삽입
+        // DTO 생성 및 텍스트 정보 삽입
         CommunityPostDto post = new CommunityPostDto();
         post.setUserId(currentUserId);
         post.setContent(postRequestDto.getContent());
@@ -67,7 +67,7 @@ public class CommunityServiceImpl implements CommunityService {
 
         long postId = post.getPostId(); // DB에서 생성된 ID 받아오기
 
-        // 2. 이미지 파일 처리
+        // 이미지 파일 처리
         List<MultipartFile> images = postRequestDto.getImages();
         if (images != null && !images.isEmpty()) {
             File uploadDir = new File(UPLOAD_DIR);
@@ -154,7 +154,7 @@ public class CommunityServiceImpl implements CommunityService {
     public CommunityPostDto updatePost(long postId, Long currentUserId, String content,
                                        List<MultipartFile> newImages, List<String> imagesToDelete) throws IOException {
 
-        // 1. 게시물 정보 조회 및 본인 확인
+        // 게시물 정보 조회 및 본인 확인
         CommunityPostDto post = communityMapper.selectPostById(postId);
         if (post == null) {
             throw new RuntimeException("Post not found");
@@ -163,27 +163,27 @@ public class CommunityServiceImpl implements CommunityService {
 //            throw new AccessDeniedException("You are not the owner of this post");
 //        }
 
-        // 2. 텍스트 내용(content)
+        // 텍스트 내용(content)
         communityMapper.updatePostContent(postId, content);
 
-        // 3. '삭제 요청된' 이미지 처리 (imagesToDelete)
+        // '삭제 요청된' 이미지 처리 (imagesToDelete)
         if (imagesToDelete != null && !imagesToDelete.isEmpty()) {
             for (String imageUrl : imagesToDelete) {
-                // 3-1. 로컬 파일 삭제
+                // 로컬 파일 삭제
                 deleteFile(imageUrl);
-                // 3-2. DB에서 삭제
+                // DB에서 삭제
                 communityMapper.deletePostImageByUrl(postId, imageUrl);
             }
         }
 
-        // 4. '새로 추가된' 이미지 처리 (newImages)
+        // '새로 추가된' 이미지 처리 (newImages)
         if (newImages != null && !newImages.isEmpty() && !newImages.get(0).isEmpty()) {
 
-            // 4-1. 새 이미지의 순서(displayOrder)를 정하기 위해 현재 최대값 조회
+            // 새 이미지의 순서(displayOrder)를 정하기 위해 현재 최대값 조회
             Integer maxOrder = communityMapper.selectMaxDisplayOrder(postId);
             int displayOrder = (maxOrder == null) ? 1 : maxOrder + 1;
 
-            // 4-2. 새 이미지 업로드 및 DB에 저장
+            // 새 이미지 업로드 및 DB에 저장
             File uploadDir = new File(UPLOAD_DIR);
             if (!uploadDir.exists()) uploadDir.mkdirs();
 
@@ -198,7 +198,7 @@ public class CommunityServiceImpl implements CommunityService {
             }
         }
 
-        // 5. 최신 게시물 정보 다시 조회하여 반환
+        // 최신 게시물 정보 다시 조회하여 반환
         CommunityPostDto updatedPost = communityMapper.selectPostById(postId);
         updatedPost.setImageUrls(communityMapper.selectImagesByPostId(postId));
         updatedPost.setTimeAgo(formatTimeAgo(updatedPost.getCreatedAt()));
@@ -247,10 +247,10 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Override
     public List<CommunityPostDto> getPopularPostList(Long currentUserId, String persona) {
-        // 1. DB에서 오늘 인기순 목록 조회
+        // DB에서 오늘 인기순 목록 조회
         List<CommunityPostDto> postList = communityMapper.selectPopularPostList(currentUserId,persona);
 
-        // 2. 각 게시물에 이미지 URL과 TimeAgo 포맷 적용 (getPostList와 동일)
+        // 각 게시물에 이미지 URL과 TimeAgo 포맷 적용 (getPostList와 동일)
         for (CommunityPostDto post : postList) {
             List<String> imageUrls = communityMapper.selectImagesByPostId(post.getPostId());
             post.setImageUrls(imageUrls);

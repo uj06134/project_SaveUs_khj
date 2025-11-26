@@ -78,10 +78,12 @@ public class DashboardController {
         goal.setUserId(userId);
 
         // 사용자 목표치 DB 저장 또는 갱신
-        UserGoalDto existingGoal = userGoalMapper.findUserGoal(userId);
+/*        UserGoalDto existingGoal = userGoalMapper.findUserGoal(userId);
         if (existingGoal == null) {
             userGoalMapper.insertUserGoal(goal);
-        }
+        }*/
+        userGoalMapper.insertUserGoal(goal);
+
         // 저장된 최신 목표치 재조회
         UserGoalDto refreshedGoal = userGoalMapper.findUserGoal(userId);
 

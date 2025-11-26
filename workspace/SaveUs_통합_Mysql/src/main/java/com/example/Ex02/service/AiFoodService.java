@@ -23,7 +23,6 @@ public class AiFoodService {
     private final String FASTAPI_URL = "http://127.0.0.1:8000/api_test";
 
 
-    // ★ 반환 타입을 List<MealSaveDto>로 변경 ★
     public List<MealSaveDto> analyzeImage(MultipartFile file) {
         List<MealSaveDto> resultList = new ArrayList<>(); // 결과를 담을 리스트
 
@@ -41,7 +40,6 @@ public class AiFoodService {
                     FASTAPI_URL, requestEntity, AiResponseWrapper.class
             );
 
-            // ★ for문으로 모든 음식 변환 ★
             if (response.getBody() != null && !response.getBody().getItems().isEmpty()) {
 
                 for (AiDto aiData : response.getBody().getItems()) {

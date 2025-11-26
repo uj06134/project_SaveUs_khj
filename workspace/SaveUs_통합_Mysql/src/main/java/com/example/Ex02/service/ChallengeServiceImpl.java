@@ -41,7 +41,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     @Override
     public List<MyChallengeItemDto> findMyChallengesByStatus(Long userId, String status) {
         if (userId == null || userId == 0) {
-            return List.of(); // 비로그인 시 빈 리스트
+            return List.of();
         }
         return challengeMapper.findMyChallengesByStatus(userId, status);
     }

@@ -87,12 +87,12 @@ public class CalendarService {
     private String getColorByScore(int score) {
 
         if (score >= 80) {
-            return "#6BCB77";   // 초록
+            return "#1DAB87";   // 초록
         }
         if (score >= 40) {
-            return "#FFD93D";   // 노랑
+            return "#FFD54F";   // 노랑
         }
-        return "#FF6B6B";       // 빨강
+        return "#FFCDD2";       // 빨강
     }
 
 }

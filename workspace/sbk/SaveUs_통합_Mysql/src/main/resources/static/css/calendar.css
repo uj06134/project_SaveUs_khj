@@ -1,189 +1,224 @@
-/* SaveUs 컬러 */
+/* =================================================================
+   Calendar.css - Compact Square & Fresh Colors
+   ================================================================= */
+
+/* 1. 디자인 토큰 (색상 정의) */
 :root {
-    --saveus-mint: #59B687;
-    --saveus-light: #E8F4EF;
-    --saveus-dark: #2F5F4A;
-    --saveus-yellow: #F8D76A;
-    --saveus-red: #FF6B6B;
+    --primary: #1DAB87;          /* 우수 (SaveUs Green) */
+    --primary-light: #E8F8F3;    /* 연한 녹색 */
+
+    --normal: #FFD54F;           /* 보통 (Gold Yellow) - 경고 느낌 뺌 */
+    --normal-text: #5D4037;      /* 노란 배경 위 글씨색 (가독성용) */
+
+    --danger-bg: #FFEBEE;        /* 개선필요 (아주 연한 핑크) */
+    --danger-text: #FF6B6B;      /* 개선필요 글씨색 */
+
+    --bg-card: #FFFFFF;
+    --text-main: #2D3748;
+    --text-sub: #718096;
+
+    --radius-card: 16px;
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* 전체 컨테이너 */
+/* 2. 안내 문구 */
+.calendar-guide-section {
+    margin-bottom: 20px;
+    text-align: center; /* 중앙 정렬로 깔끔하게 */
+}
+
+.guide-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+}
+
+.guide-text {
+    font-size: 14px;
+    color: var(--text-sub);
+}
+
+/* 3. 캘린더 메인 컨테이너 (컴팩트한 카드) */
 .calendar-container {
-    max-width: 900px;
+    background-color: var(--bg-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 32px;
+
+    /* ★ 핵심 수정: 크기 줄이기 ★ */
+    /* 너무 넓게 퍼지지 않도록 최대 너비를 줄여서 한눈에 들어오게 함 */
+    max-width: 800px;
     margin: 0 auto;
-    padding: 20px 0;
 }
 
-/* 상단 네비게이션 */
+/* 4. 캘린더 헤더 */
 .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    margin-bottom: 24px;
+    padding: 0 10px;
 }
 
+.calendar-header h2 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+}
+
+/* 네비게이션 버튼 (모던 스타일) */
 .nav-btn {
-    padding: 8px 18px;
-    background: var(--saveus-mint);
-    color: white;
-    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    background-color: white;
+    color: var(--text-sub);
+    border: 1px solid #E2E8F0;
     border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
     text-decoration: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    transition: 0.2s;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
 
 .nav-btn:hover {
-    background: var(--saveus-dark);
+    border-color: var(--primary);
+    color: var(--primary);
+    background-color: var(--primary-light);
 }
 
-/* 요일 */
+/* 5. 요일 헤더 */
 .weekday-row {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    margin-bottom: 6px;
-    padding: 0 10px;
+    margin-bottom: 12px;
+    text-align: center;
 }
 
 .weekday {
-    text-align: center;
-    font-weight: bold;
-    font-size: 14px;
-    color: var(--saveus-dark);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-sub);
+    padding-bottom: 8px;
 }
+.weekday:first-child { color: #FF6B6B; } /* 일요일 포인트 */
+.weekday:last-child { color: #4A90E2; } /* 토요일 포인트 */
 
-/* 날짜 박스 */
+
+/* 6. 날짜 그리드 */
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    padding: 0 10px;
+    gap: 10px; /* 칸 사이 간격 */
 }
 
+/* 날짜 박스 (정사각형 & 컴팩트) */
 .day-box {
+    /* ★ 정사각형 비율 유지 */
+    aspect-ratio: 1 / 1;
+
+    background-color: #FFFFFF;
+    border: 1px solid #F0F0F0;
+    border-radius: 12px;
     position: relative;
-    background: white;
-    border-radius: 10px;
-    height: 70px;             /* 더 작게 조정 */
-    padding: 6px;
-
-    display: flex;
-    flex-direction: column;
-
-    border: 1px solid #e8e8e8;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
 }
 
+.day-box:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    z-index: 10;
+}
+
+/* 오늘 날짜 강조 */
 .day-box.today {
-    border: 2px solid var(--saveus-mint);
+    border: 2px solid var(--primary);
+    background-color: #FFFFFF;
+}
+.day-box.today .day-number {
+    color: var(--primary);
+    font-weight: 800;
 }
 
 /* 날짜 숫자 */
 .day-number {
+    position: absolute;
+    top: 8px;
+    left: 10px;
     font-size: 13px;
-    font-weight: bold;
-    color: #333;
-    z-index: 2;
+    font-weight: 600;
+    color: var(--text-sub);
+    z-index: 5;
 }
 
-/* 점수가 박스 전체를 채우는 스타일 */
+/* 점수 배경 (서버에서 색상 주입됨) */
+/* ★ 주의: 서버(Java)에서 보내주는 HexCode가 CSS 변수와 톤이 맞아야 예쁩니다 */
 .score-fill {
     position: absolute;
+    bottom: 0;
     left: 0;
-    top: 0;
-
     width: 100%;
-    height: 100%;
+    height: 100%; /* 전체 채우기 */
 
-    opacity: 0.3;
-    border-radius: 10px;
-
+    /* 텍스트 배치 */
     display: flex;
-    justify-content: flex-end;
     align-items: flex-end;
+    justify-content: flex-end;
+    padding: 8px 10px;
 
-    padding: 6px;
-    font-size: 13px;
-    font-weight: bold;
-    color: var(--saveus-dark);
+    /* 점수 글자 스타일 */
+    font-size: 16px;
+    font-weight: 800;
 
-    z-index: 1;
+    /* 중요: 배경색이 덮어씌워지므로 글자색은 상황에 따라 달라질 수 있음 */
+    /* 기본적으로 약간 투명도를 주어 부드럽게 만듦 */
+    opacity: 0.9;
 }
 
-/* 범례 */
+/* 7. 범례 (Legend) */
 .legend-box {
-    max-width: 900px;
-    margin: 25px auto 0;
-    padding: 10px 20px;
+    max-width: 800px;
+    margin: 24px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 중앙 정렬 */
+    gap: 32px;
 }
 
 .legend-title {
-    font-size: 15px;
-    font-weight: bold;
-    margin-bottom: 6px;
-    color: var(--saveus-dark);
+    display: none; /* 제목 숨김 (심플하게) */
 }
 
 .legend-list {
     display: flex;
-    gap: 14px;
-    font-size: 13px;
-    color: #444;
+    gap: 24px;
 }
 
 .legend-item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-sub);
+    font-weight: 500;
 }
 
 .legend-color {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border-radius: 4px;
 }
 
-.legend-green { background: var(--saveus-mint); }
-.legend-yellow { background: var(--saveus-yellow); }
-.legend-red { background: var(--saveus-red); }
-
-/* 전체 안내 영역 */
-.calendar-guide-section {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 4px;
-}
-
-/* 제목 */
-.guide-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 6px;
-}
-
-/* 설명 텍스트 */
-.guide-text {
-    font-size: 14px;
-    color: #666;
-    margin: 0;
-    line-height: 1.5;
-}
-.nav-btn {
-    padding: 8px 18px;
-    background: var(--saveus-mint);
-    color: white;
-    font-size: 15px;
-    border-radius: 8px;
-    text-decoration: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    transition: background-color 0.2s;
-}
-
-.nav-btn:hover {
-    background: #2CA578;
-}
+/* 범례 색상 매칭 */
+.legend-green { background-color: var(--primary); }
+.legend-yellow { background-color: var(--normal); }
+.legend-red { background-color: var(--danger-bg); border: 1px solid #FFCDD2; }
