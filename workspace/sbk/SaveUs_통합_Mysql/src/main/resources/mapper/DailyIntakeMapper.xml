@@ -34,4 +34,20 @@
         ORDER BY eatDate
     </select>
 
+    <select id="findMealsByDate" resultType="com.example.Ex02.dto.MealEntryDto">
+        SELECT
+        ENTRY_ID AS entryId,
+        USER_ID AS userId,
+        MEAL_NAME AS mealName,
+        DATE_FORMAT(EAT_TIME, '%H:%i') AS eatTime,
+        CALORIES_KCAL AS caloriesKcal,
+        PROTEIN_G AS proteinG,
+        CARBS_G AS carbsG,
+        FATS_G AS fatsG
+        FROM MEAL_ENTRY
+        WHERE USER_ID = #{userId}
+        AND DATE(EAT_TIME) = #{date}
+        ORDER BY EAT_TIME ASC
+    </select>
+
 </mapper>

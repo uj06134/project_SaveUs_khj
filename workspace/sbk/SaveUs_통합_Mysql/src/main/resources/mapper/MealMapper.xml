@@ -188,7 +188,7 @@
         #{score},
         #{similarity},
         #{riskLevel},
-        NOW()
+        DATE_SUB(NOW(), INTERVAL 1 DAY)
         )
     </insert>
 

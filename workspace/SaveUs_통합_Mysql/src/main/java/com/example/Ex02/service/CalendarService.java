@@ -2,6 +2,8 @@ package com.example.Ex02.service;
 
 import com.example.Ex02.dto.CalendarDayDto;
 import com.example.Ex02.dto.CalendarScoreDto;
+import com.example.Ex02.dto.MealEntryDto;
+import com.example.Ex02.mapper.DailyIntakeMapper;
 import com.example.Ex02.mapper.HealthScoreMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class CalendarService {
 
     @Autowired
     private HealthScoreMapper healthScoreMapper;
+
+    @Autowired
+    private DailyIntakeMapper dailyIntakeMapper;
 
     /**
      * 특정 월의 전체 날짜 + 건강점수를 CalendarDayDto 형태로 반환
@@ -93,6 +98,10 @@ public class CalendarService {
             return "#FFD54F";   // 노랑
         }
         return "#FFCDD2";       // 빨강
+    }
+
+    public List<MealEntryDto> getMealDetails(Long userId, LocalDate date) {
+        return dailyIntakeMapper.findMealsByDate(userId, date);
     }
 
 }

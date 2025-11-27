@@ -5,8 +5,6 @@
 
 <div layout:fragment="content">
     <link rel="stylesheet" th:href="@{/css/challenges.css}">
-    <script defer th:src="@{/js/challenges.js}"></script>
-
     <div class="challenge-hub-container">
 
         <header class="hub-header">
@@ -176,18 +174,7 @@
                     <div class="filter-controls">
                         <form action="/challenges" method="get" class="filter-form">
                             <input type="hidden" name="tab" value="explore-tab">
-
                             <input type="search" name="keyword" placeholder="원하는 챌린지 검색..." class="search-input" th:value="${currentKeyword}">
-<!--                            <div class="tag-filters">
-                                <button type="submit" name="tag" value="" th:classappend="${currentTag == null ? 'active' : ''}">All</button>
-                                <button type="submit" name="tag" th:each="tag : ${allTags}"
-                                        th:if="${tag != null}"
-                                        th:value="${tag.tagName}"
-                                        th:text="${tag.tagName}"
-                                        th:classappend="${currentTag == tag.tagName ? 'active' : ''}">
-                                    Weight Loss
-                                </button>
-                            </div>-->
                         </form>
                     </div>
 
@@ -272,4 +259,8 @@
         </div>
     </div>
 </div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/js/challenges.js}"></script>
+</th:block>
 </html>

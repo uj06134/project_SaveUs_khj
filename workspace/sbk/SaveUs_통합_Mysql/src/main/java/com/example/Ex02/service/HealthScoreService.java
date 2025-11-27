@@ -53,7 +53,7 @@ public class HealthScoreService {
      * - 칼로리, 탄수화물, 단백질, 지방을 각각 25점씩 배분
      * - 달성률 기반 점수 + 과다 섭취 패널티 방식을 적용
      */
-    private int calculateDailyScore(DailyIntakeDto d, UserGoalDto g) {
+    public int calculateDailyScore(DailyIntakeDto d, UserGoalDto g) {
 
         int score = 0;
 

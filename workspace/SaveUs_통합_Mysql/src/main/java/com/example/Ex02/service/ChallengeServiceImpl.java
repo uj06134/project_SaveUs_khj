@@ -214,7 +214,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         // 3. DB 저장
         for (DiabetesScoreDto res : results) {
             if (res.getError() != null) continue;
-            mealMapper.insertDiabetesScore(res); // 이름 바뀐 메서드 호출
+            mealMapper.insertDiabetesScore(res);
         }
     }
 

@@ -1,9 +1,15 @@
 package com.example.Ex02.controller;
 
+import com.example.Ex02.dto.DailyIntakeDto;
 import com.example.Ex02.dto.MealDto;
 import com.example.Ex02.dto.MealSaveDto;
+import com.example.Ex02.dto.UserGoalDto;
+import com.example.Ex02.mapper.DailyIntakeMapper;
+import com.example.Ex02.mapper.HealthScoreMapper;
 import com.example.Ex02.mapper.MealMapper;
+import com.example.Ex02.mapper.UserGoalMapper;
 import com.example.Ex02.service.AiFoodService;
+import com.example.Ex02.service.HealthScoreService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +33,18 @@ public class MealController {
 
     @Autowired
     private AiFoodService aiFoodService;
+
+    @Autowired
+    private HealthScoreMapper healthScoreMapper;
+
+    @Autowired
+    private HealthScoreService healthScoreService;
+
+    @Autowired
+    private DailyIntakeMapper dailyIntakeMapper;
+
+    @Autowired
+    private UserGoalMapper userGoalMapper;
 
     /**
      * AI 식단 분석 이미지 업로드
@@ -43,6 +63,7 @@ public class MealController {
     @PostMapping("/meal/save")
     public String saveMeal(MealSaveDto dto, HttpSession session) {
 
+        System.out.println("--------------------------------------------------------");
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return "redirect:/login";
 
@@ -65,6 +86,17 @@ public class MealController {
         map.put("sodium", dto.getSodium());
 
         mealMapper.saveMeal(map);
+
+        //식단 저장시 점수도 계산해서 db에 저장 혹은 업데이트
+        DailyIntakeDto dailyIntake = dailyIntakeMapper.findDailyIntake(userId).get(0);
+        System.out.println("dailyIntake:"+dailyIntake);
+        UserGoalDto userGoal = userGoalMapper.findUserGoal(userId);
+        System.out.println("userGoal:"+userGoal);
+        long score = healthScoreService.calculateDailyScore(dailyIntake,userGoal);
+        java.sql.Date eatDate = java.sql.Date.valueOf(eatDateTime.toLocalDate());
+        healthScoreMapper.updateScoreByUserId(userId,eatDate,score);
+
+
         return "redirect:/dashboard";
     }
 

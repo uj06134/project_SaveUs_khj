@@ -17,56 +17,82 @@
         <h2>건강 리포트</h2>
     </div>
 
-    <div class="dashboard-grid daily-section" id="dailySection">
+    <div class="dashboard-grid grid-3" id="dailySection">
 
         <div class="card">
             <div class="card-header">
                 <div class="card-title">선택일 식단 분석</div>
                 <input type="date" id="dietDate" class="date-picker-small">
             </div>
-
-            <div id="dietNoData" class="no-data-message">
-                <p>해당 날짜 기록이 없습니다.</p>
+            <div id="dietNoData" class="no-data-message" style="display:none;">
+                <p>기록 없음</p>
             </div>
-
             <div id="dietChartArea" class="chart-container">
                 <canvas id="diabetesRadarChart"></canvas>
             </div>
+        </div>
 
-            <div class="analysis-text" id="diabetesText">
-                분석 중...
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">당뇨 위험도 분석</div>
+                <input type="date" id="diabetesDate" class="date-picker-small">
+            </div>
+
+            <div class="card-flex-content" id="diabetesContent">
+                <div class="content-center">
+                    <div class="score-circle" id="diabetesScoreBadge">
+                        <div class="score-top-row">
+                            <span class="score-num">-</span>
+                            <span class="score-unit">점</span>
+                        </div>
+                        <span class="score-label">예방 점수</span>
+                    </div>
+
+                    <div class="risk-level-text" id="diabetesRiskText">-</div>
+
+                    <div class="diabetes-comment" id="diabetesComment">
+                        분석 데이터가 없습니다.
+                    </div>
+                </div>
+
+                <p class="chart-caption">
+                    * 선택일 식단 기록을 기반으로 한 분석입니다.
+                </p>
             </div>
         </div>
 
         <div class="card">
             <div class="card-header">
                 <div class="card-title">비만 위험도 분석</div>
-                <input type="date" id="obesityDate" class="date-picker-small">
+                <!--<input type="date" id="obesityDate" class="date-picker-small">-->
             </div>
 
-            <div class="doughnut-wrapper">
-                <canvas id="obesityRiskChart"></canvas>
-                <div class="center-text">
-                    <span id="obesityPercent">0%</span>
-                    <span class="label">위험도</span>
+            <div class="card-flex-content">
+                <div class="content-center">
+                    <div class="doughnut-wrapper">
+                        <canvas id="obesityRiskChart"></canvas>
+                        <div class="center-text">
+                            <span id="obesityPercent">0%</span>
+                            <span class="label">위험도</span>
+                        </div>
+                    </div>
+
+                    <div id="obesityCommentText" class="obesity-comment-text">
+                        분석 중...
+                    </div>
                 </div>
+
+                <p class="chart-caption">
+                    * 오늘 식단이 비만 위험도에 미치는 즉각적인 영향을 보여주는 지표입니다.
+                </p>
             </div>
-            <p class="chart-caption">* 선택일 체중 기반 AI 예측</p>
         </div>
 
-        <div class="card full-width auto-height">
-            <div class="card-header">
-                <div class="card-title">SaveUs 코멘트</div>
-            </div>
-            <div class="ai-comment-box" id="aiComment">
-                데이터를 불러오는 중입니다...
-            </div>
-        </div>
     </div>
 
     <hr class="section-divider">
 
-    <h3 class="section-title">최근 통계 (최근 30일)</h3>
+    <h3 class="section-title">최근 건강 트렌드 (최근 30일)</h3>
 
     <div class="dashboard-grid" id="commonSection">
 
@@ -93,14 +119,14 @@
             <div class="card-header">
                 <div class="card-title">3대 영양소 밸런스 변화</div>
             </div>
-            <div class="chart-stack">
-                <div class="chart-slot">
+            <div style="display: flex; flex-direction: column; justify-content: space-between; height: 360px; padding: 10px 0;">
+                <div style="flex: 1; position: relative; min-height: 0;">
                     <canvas id="carbChart"></canvas>
                 </div>
-                <div class="chart-slot">
+                <div style="flex: 1; position: relative; min-height: 0; margin-top: 15px;">
                     <canvas id="proteinChart"></canvas>
                 </div>
-                <div class="chart-slot">
+                <div style="flex: 1; position: relative; min-height: 0; margin-top: 15px;">
                     <canvas id="fatChart"></canvas>
                 </div>
             </div>
@@ -110,7 +136,7 @@
             <div class="card-header">
                 <div class="card-title">자주 먹는 음식 TOP 5</div>
             </div>
-            <div class="top-meals-wrapper">
+            <div class="top-meals-wrapper" style="height: 360px;">
                 <ul id="topMealsList" class="top-meals-list"></ul>
             </div>
         </div>

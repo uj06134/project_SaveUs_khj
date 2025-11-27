@@ -1,6 +1,7 @@
 package com.example.Ex02.controller;
 
 import com.example.Ex02.dto.CalendarDayDto;
+import com.example.Ex02.dto.MealEntryDto;
 import com.example.Ex02.service.CalendarService;
 import com.example.Ex02.service.HealthScoreService;
 import jakarta.servlet.http.HttpSession;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -66,5 +68,18 @@ public class CalendarController {
         model.addAttribute("today", today);
 
         return "calendar";
+    }
+
+    @GetMapping("/api/calendar/meals")
+    @ResponseBody
+    public List<MealEntryDto> getMealDetailsApi(
+            @RequestParam("date") String dateStr,
+            HttpSession session
+    ) {
+        Long userId = (Long) session.getAttribute("userId");
+
+        // String("2025-11-27") -> LocalDate 변환 후 조회
+        LocalDate date = LocalDate.parse(dateStr);
+        return calendarService.getMealDetails(userId, date);
     }
 }

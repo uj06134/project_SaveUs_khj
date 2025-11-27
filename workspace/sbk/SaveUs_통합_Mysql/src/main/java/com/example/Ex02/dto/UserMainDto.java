@@ -14,6 +14,8 @@ public class UserMainDto {
     private Double currentWeight;     // USERS.CURRENT_WEIGHT
     private Double bmi;
 
+    private String emailVerified;
+
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
 
@@ -47,4 +49,7 @@ public class UserMainDto {
     public void setBmi(Double bmi) {
         this.bmi = bmi;
     }
+
+    public String getEmailVerified() { return emailVerified; }
+    public void setEmailVerified(String emailVerified) { this.emailVerified = emailVerified; }
 }

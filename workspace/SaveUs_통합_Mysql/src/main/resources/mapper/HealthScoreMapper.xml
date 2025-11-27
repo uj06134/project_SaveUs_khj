@@ -13,6 +13,13 @@
         STATUS_MESSAGE = VALUES(STATUS_MESSAGE)
     </insert>
 
+    <insert id="updateScoreByUserId">
+        INSERT INTO HEALTH_SCORE_DAILY (USER_ID, SCORE_DATE, SCORE)
+        VALUES (#{userId}, #{scoreDate, jdbcType=DATE}, #{score})
+        ON DUPLICATE KEY UPDATE
+        SCORE = VALUES(SCORE)
+    </insert>
+
     <select id="findScoresOfMonth" resultType="com.example.Ex02.dto.CalendarScoreDto">
         SELECT
         SCORE_DATE AS scoreDate,
@@ -47,5 +54,11 @@
         ORDER BY SCORE_DATE DESC
         LIMIT 1
     </select>
+
+    <insert id="updateWeightByUserId">
+        INSERT INTO HEALTH_SCORE_DAILY (USER_ID, SCORE_DATE, WEIGHT, SCORE)
+        VALUES (#{userId}, #{scoreDate}, #{weight}, 0)  ON DUPLICATE KEY UPDATE
+        WEIGHT = VALUES(WEIGHT)
+    </insert>
 
 </mapper>

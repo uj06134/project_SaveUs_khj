@@ -1,23 +1,18 @@
 @charset "UTF-8";
 
-/* ===============================
-   페이지 헤더 & 공통 레이아웃
-================================ */
+/* 공통 레이아웃 */
 .report-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
 }
-
 .report-header h2 {
     font-size: 24px;
     font-weight: 800;
     color: var(--text-main);
-    letter-spacing: -0.5px;
 }
 
-/* 섹션 타이틀 (최근 통계 등) */
 .section-title {
     margin-bottom: 20px;
     color: var(--text-main);
@@ -25,14 +20,13 @@
     font-weight: 700;
 }
 
-/* 구분선 */
 .section-divider {
     border: 0;
     border-top: 1px solid var(--border-color);
     margin: 40px 0 30px 0;
 }
 
-/* 그리드 레이아웃 */
+/* 그리드 시스템 */
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -40,33 +34,27 @@
     margin-bottom: 32px;
 }
 
-.daily-section {
-    margin-bottom: 40px; /* 기존 margin-bottom 스타일 대체 */
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
 }
 
-/* 가로 꽉 채우기 (2칸 차지) */
-.full-width {
-    grid-column: span 2;
+@media (max-width: 1024px) {
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .dashboard-grid, .grid-3 { grid-template-columns: 1fr; }
 }
 
-/* ===============================
-   카드 스타일 (Eco-Modern)
-================================ */
+/* 카드 스타일 */
 .card {
-    background-color: var(--bg-card); /* 흰색 */
-    border-radius: var(--radius-lg);  /* 16px */
-    /* 테두리 제거 후 그림자 적용 */
+    background-color: var(--bg-card);
+    border-radius: var(--radius-lg);
     border: none;
     box-shadow: var(--shadow-md);
-
     padding: 24px;
     display: flex;
     flex-direction: column;
-    min-height: 320px;
-}
-
-.card.auto-height {
-    min-height: auto;
+    min-height: 360px; /* 높이 통일감을 위해 약간 늘림 */
 }
 
 .card-header {
@@ -77,224 +65,206 @@
 }
 
 .card-title {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--text-main);
 }
 
-/* 날짜 선택기 (작은 버전) */
+/* [신규] 카드 내부 수직 정렬용 래퍼 */
+.card-flex-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* [신규] 중앙 컨텐츠 영역 (차트, 뱃지 등) */
+.content-center {
+    flex-grow: 1; /* 남은 공간 차지하여 수직 중앙 정렬 유도 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* 하단 캡션 (항상 바닥에 붙음) */
+.chart-caption {
+    margin-top: auto; /* 위쪽 여백을 자동으로 채워 바닥으로 밈 */
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-sub);
+    padding-top: 15px;
+}
+
+
+/* 날짜 선택기 */
 .date-picker-small {
-    padding: 6px 12px;
+    padding: 5px 10px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-sub);
     background: var(--bg-page);
     cursor: pointer;
     outline: none;
 }
-.date-picker-small:focus {
-    border-color: var(--primary);
-}
 
-/* 뱃지 스타일 */
+/* 뱃지 */
 .badge {
- /*   background: linear-gradient(90deg, var(--primary) 0%, #85D648 100%);*/
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-
     color: white;
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 20px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
-    box-shadow: 0 2px 5px rgba(29, 171, 135, 0.3);
-    border: none;
 }
 
-/* ===============================
-   차트 영역 스타일
-================================ */
+/* 차트 컨테이너 */
 .chart-container {
     position: relative;
     width: 100%;
-    height: 300px;
     flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+canvas { width: 100% !important; height: 100% !important; }
 
-canvas {
-    width: 100% !important;
-    height: 100% !important;
-    max-height: 300px;
-}
-
-/* 1. 도넛 차트 (비만도) 래퍼 */
+/* 도넛 차트 */
 .doughnut-wrapper {
     position: relative;
-    width: 180px;
-    height: 180px;
-    margin: 20px auto;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 15px; /* 하단 여백 추가 */
 }
-
-/* 중앙 텍스트 오버레이 */
 .center-text {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    pointer-events: none;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    text-align: center; pointer-events: none;
 }
-
 .center-text #obesityPercent {
-    display: block;
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--text-main); /* JS에서 색상 변경됨 */
+    display: block; font-size: 24px; font-weight: 800; color: var(--text-main);
+}
+.center-text .label { font-size: 12px; color: var(--text-sub); margin-top: 2px; display: block; }
+
+
+/* 비만도 코멘트 스타일 */
+.obesity-comment-text {
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-line;
+    font-weight: 500;
 }
 
-.center-text .label {
-    font-size: 13px;
-    color: var(--text-sub);
-    margin-top: 4px;
-    display: block;
-}
-
-/* 2. 세로로 쌓인 차트 (3대 영양소) */
-.chart-stack {
+/* 당뇨 컨텐츠 스타일 */
+.score-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, #20c997 100%);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 300px;
-    padding: 10px 0;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 6px 15px rgba(32, 201, 151, 0.4);
+    margin-bottom: 20px;
+    user-select: none;
 }
 
-.chart-slot {
-    flex: 1;
-    position: relative;
-    min-height: 0;
-    margin-top: 10px;
-}
-.chart-slot:first-child {
-    margin-top: 0;
+.score-top-row {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    margin-bottom: 4px;
 }
 
-
-/* ===============================
-   텍스트 및 메시지 스타일
-================================ */
-/* 분석 텍스트 */
-.analysis-text {
-    margin-top: 10px;
-    font-size: 15px;
-    font-weight: 700;
-    text-align: center;
-    color: var(--text-main); /* JS가 색상 변경할 수 있음 */
+.score-num {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1;
 }
 
-#diabetesText.analysis-text {
-    display: inline-block; /* 글자 크기만큼만 박스 생성 */
-
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-
-    color: white; /* 글자는 흰색 */
-    padding: 8px 16px; /* 넉넉한 내부 여백 */
-    border-radius: 30px; /* 둥근 알약 모양 */
-    font-weight: 700;
-    font-size: 15px;
-    box-shadow: 0 4px 12px rgba(29, 171, 135, 0.3); /* 그림자로 입체감 */
-
-    /* 위치 조정 (카드 하단 중앙) */
-    margin-top: 24px; /* 차트와 간격 */
-    text-align: center;
+.score-unit {
+    font-size: 20px;
+    font-weight: 600;
 }
 
-/* 차트 캡션 */
-.chart-caption {
-    text-align: center;
+.score-label {
     font-size: 13px;
-    color: var(--text-sub);
-    margin-top: 12px;
+    font-weight: 500;
+    opacity: 0.9;
 }
 
-/* 데이터 없음 메시지 */
-.no-data-message {
-    display: none; /* JS로 제어 */
-    text-align: center;
-    padding: 60px 0;
-    color: var(--text-sub);
-    font-size: 15px;
+.risk-level-text {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
 }
 
-/* AI 코멘트 박스 */
-.ai-comment-box {
-    background: linear-gradient(135deg, #E8F8F3 0%, #FFFFFF 100%);
-    border-left: 4px solid var(--primary);
-    border: 1px solid #D6F1E9;
-    border-left-width: 4px;
-    padding: 24px;
-    border-radius: 12px;
-    line-height: 1.6;
+.diabetes-comment {
+    background-color: #F8F9FA;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
     color: var(--text-main);
-    font-size: 15px;
-    box-shadow: 0 4px 10px rgba(29, 171, 135, 0.05);
+    line-height: 1.5;
+    width: 100%;
+    word-break: keep-all;
 }
 
-/* ===============================
-   리스트 스타일 (Top Meals)
-================================ */
+/* [개선] Top 5 리스트 스타일 */
 .top-meals-wrapper {
-    height: 300px;
-    overflow-y: auto;
-    /* 스크롤바 디자인 (선택사항) */
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-color) transparent;
+    overflow-y: auto; scrollbar-width: thin;
+    padding-right: 5px; /* 스크롤바 공간 */
 }
-
-.top-meals-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+.top-meals-list { list-style: none; padding: 0; margin: 0; }
 
 .top-meals-list li {
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border-color);
-    font-size: 15px;
-    color: var(--text-main);
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    background-color: #F8F9FA; /* 박스 배경색 */
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border-radius: 10px; /* 둥근 모서리 */
+    font-size: 14px;
+    color: var(--text-main);
+    transition: transform 0.1s;
 }
 
-.top-meals-list li:last-child {
-    border-bottom: none;
+.top-meals-list li:hover {
+    background-color: #F0FAF7; /* 호버 시 살짝 민트색 */
 }
 
-/* ===============================
-   상태별 텍스트 색상 (JS 동적 적용용)
-================================ */
-.text-excellent { color: #3B82F6 !important; } /* 파랑 (유지) */
-.text-good { color: var(--success) !important; }      /* 초록 */
-.text-normal { color: var(--warning) !important; }     /* 노랑 */
-.text-warning { color: #FF9F43 !important; }    /* 주황 */
-.text-danger { color: var(--danger) !important; }     /* 빨강 */
+.top-meals-list li:last-child { margin-bottom: 0; }
 
-#diabetesText {
-    display: table; /* 글자 크기만큼만 박스 크기 잡기 (핵심) */
-    margin: 24px auto 0 auto; /* 위쪽 여백, 좌우 중앙 정렬 */
-
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-
-    border-radius: 50px;
-    padding: 10px 24px;
-    box-shadow: 0 4px 15px rgba(29, 171, 135, 0.3);
-    color: #ffffff !important;
-    font-size: 16px;
-    font-weight: 800;
+/* 순위 뱃지 */
+.rank-badge {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
     text-align: center;
-    line-height: 1.2;
-    transition: all 0.3s ease;
+    background-color: #ddd;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 10px;
 }
+/* 1~3위 강조 색상 */
+.rank-1 { background-color: #FFC107; box-shadow: 0 2px 5px rgba(255, 193, 7, 0.4); } /* 금 */
+.rank-2 { background-color: #A0AEC0; } /* 은 */
+.rank-3 { background-color: #D69E2E; opacity: 0.8; } /* 동 */
 
+.meal-name { font-weight: 600; }
+.meal-cat { font-size: 12px; color: var(--text-sub); }
+
+
+/* 텍스트 색상 */
+.text-excellent { color: #3B82F6; }
+.text-good { color: #1DAB87; }
+.text-normal { color: #FFC107; }
+.text-warning { color: #FF9F43; }
+.text-danger { color: #FF6B6B; }

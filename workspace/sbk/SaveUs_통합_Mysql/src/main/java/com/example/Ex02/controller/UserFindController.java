@@ -2,6 +2,7 @@ package com.example.Ex02.controller;
 
 import com.example.Ex02.dto.UserJoinDto;
 import com.example.Ex02.mapper.UserMapper;
+import com.example.Ex02.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,9 @@ public class UserFindController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserService userService;
 
     // 선택 화면
     @GetMapping("/user/find-main")
@@ -73,25 +77,44 @@ public class UserFindController {
 
         UserJoinDto user = userMapper.findByEmail(email);
 
-        // 실패
         if (user == null || !user.getNickname().equals(nickname)) {
             model.addAttribute("findError", "일치하는 회원 정보를 찾을 수 없습니다.");
             return "user/findPw";
         }
 
-        // 성공 → 재설정 대상 저장
+        userService.sendPasswordResetMail(user);
+
         session.setAttribute("resetUserId", user.getUserId());
+        model.addAttribute("findSuccess",
+                "입력하신 이메일로 비밀번호 재설정 링크를 발송했습니다.\n메일을 확인해 주세요.");
 
-        // 안내 메시지
-        model.addAttribute("findSuccess", "회원 정보가 확인되었습니다. 비밀번호를 재설정하세요.");
-
-        // 비밀번호 재설정 페이지로 이동
-        return "redirect:/user/reset-pw";
+        return "user/findPw";
     }
 
     // 비밀번호 재설정 페이지
     @GetMapping("/user/reset-pw")
-    public String resetPwPage() {
+    public String resetPwPage(
+            @RequestParam(value = "token", required = false) String token,
+            HttpSession session,
+            Model model) {
+
+        System.out.println(token);
+
+
+        if (token == null || token.isBlank()) {
+            model.addAttribute("resetError", "잘못된 접근입니다.");
+            return "redirect:/login";
+        }
+
+        Long userId = userService.consumePasswordResetMail(token);
+
+        if (userId == null) {
+            model.addAttribute("resetError",
+                    "비밀번호 재설정 링크가 만료되었거나 올바르지 않습니다.");
+            return "redirect:/login";
+        }
+
+        session.setAttribute("resetUserId", userId);
         return "user/resetPw";
     }
 

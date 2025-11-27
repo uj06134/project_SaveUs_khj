@@ -1,9 +1,11 @@
 package com.example.Ex02.mapper;
 
 import com.example.Ex02.dto.DailyIntakeDto;
+import com.example.Ex02.dto.MealEntryDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Mapper
@@ -17,5 +19,7 @@ public interface DailyIntakeMapper {
             @Param("year") int year,
             @Param("month") int month
     );
+
+    List<MealEntryDto> findMealsByDate(@Param("userId") Long userId, @Param("date") LocalDate date);
 
 }
