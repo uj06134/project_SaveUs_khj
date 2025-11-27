@@ -237,4 +237,10 @@
         )
     </select>
 
+    <select id="isExistPost" resultType="boolean">
+        SELECT COUNT(*)
+        FROM POSTS
+        WHERE POST_ID = ${postId}
+    </select>
+
 </mapper>
