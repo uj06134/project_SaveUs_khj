@@ -16,4 +16,6 @@ public class FoodRecommendRequest {
     private double current_fat;
     private double current_fiber;
     private double current_sodium;
+
+    private int user_id;
 }
