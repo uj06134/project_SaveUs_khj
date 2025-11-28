@@ -78,7 +78,9 @@ public class UserController {
     }
 
 
-       // 회원가입
+    /* -------------------------------
+       회원가입
+       ------------------------------- */
     @GetMapping("/join")
     public String joinPage(@ModelAttribute("userDto") UserJoinDto userJoinDto) {
         return "user/userInsert";
@@ -114,7 +116,9 @@ public class UserController {
     }
 
 
-   // 메일 인증
+    /* -------------------------------
+   메일 인증
+   ------------------------------- */
     @GetMapping("/user/send-verification")
     @ResponseBody
     public String sendJoinVerification(@RequestParam("email") String email, HttpSession session) {
