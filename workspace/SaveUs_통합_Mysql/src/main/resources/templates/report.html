@@ -21,7 +21,7 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title">권장 섭취량 대비 분석</div>
+                <div class="card-title">선택일 식단 분석</div>
                 <input type="date" id="dietDate" class="date-picker-small">
             </div>
             <div id="dietNoData" class="no-data-message" style="display:none;">
@@ -34,7 +34,7 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title">식단 당뇨 위험도 분석</div>
+                <div class="card-title">당뇨 위험도 분석</div>
                 <input type="date" id="diabetesDate" class="date-picker-small">
             </div>
 
@@ -105,10 +105,6 @@
                 </span>
             </span>
             </h3>
-
-            <p class="exercise-category" style="margin-top:6px; font-size:14px; color:#555;">
-                운동 카테고리: <span th:text="${data.predicted_category}">-</span>
-            </p>
         </div>
 
         <div class="card-flex-content" id="exerciseContent">
@@ -116,21 +112,17 @@
 
                 <div class="exercise-block">
                     <h4 class="exercise-title">준비운동</h4>
-                    <p id="exercisePrep" th:text="${data.routine.준비운동}">-</p>
+                    <p id="exercisePrep">-</p>
                 </div>
 
                 <div class="exercise-block">
                     <h4 class="exercise-title">본운동</h4>
-                    <ul id="exerciseMain">
-                        <li th:each="item : ${data.routine.본운동}"
-                            th:text="${item}">
-                        </li>
-                    </ul>
+                    <ul id="exerciseMain"></ul>
                 </div>
 
                 <div class="exercise-block">
                     <h4 class="exercise-title">정리운동</h4>
-                    <p id="exerciseCool" th:text="${data.routine.정리운동}">-</p>
+                    <p id="exerciseCool">-</p>
                 </div>
 
             </div>

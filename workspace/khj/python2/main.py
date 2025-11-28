@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import pandas as pd
 import joblib
-import requests
+import pymysql
+import mysql.connector
 
 from food_recommender import (
     filter_processed,
@@ -12,57 +13,85 @@ from food_recommender import (
 app = FastAPI()
 
 # ------------------------------------------------------------
-# 0. Spring 서버 주소
+# 1. MySQL 연결 함수
 # ------------------------------------------------------------
-SPRING_URL = "http://3.37.90.119:8080"
+def get_connection():
+    return pymysql.connect(
+        host="3.37.90.119",
+        user="root",
+        password="3306",
+        database="saveus",
+        charset="utf8mb4",
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+# ------------------------------------------------------------
+# 2. FOOD_NUTRITION 데이터 로드
+# ------------------------------------------------------------
+def load_food_data():
+    conn = get_connection()
+    query = """
+        SELECT 
+            FOOD_NAME AS food_name,
+            CATEGORY AS category,
+            CALORIES_KCAL AS calories_kcal,
+            CARBS_G AS carbs_g,
+            PROTEIN_G AS protein_g,
+            FATS_G AS fat_g,
+            FIBER_G AS fiber_g,
+            SODIUM_MG AS sodium_mg
+        FROM FOOD_NUTRITION
+    """
+    df = pd.read_sql(query, conn)
+    conn.close()
+    return df
 
 
 # ------------------------------------------------------------
-# 1. 음식 DB + 모델 로드
-# ------------------------------------------------------------
-try:
-    df_food = pd.read_csv("food_clustered.csv")
-    model = joblib.load("food_recommend_model.pkl")
-    print("모델 로드 완료: food_recommend_model.pkl")
-except:
-    raise Exception("food_clustered.csv 또는 food_recommend_model.pkl 파일을 찾을 수 없습니다.")
-
-
-# ------------------------------------------------------------
-# 2. Request 형식 정의 (userId만 받음)
-# ------------------------------------------------------------
-class RecommendRequest(BaseModel):
-    user_id: int
-
-
-# ------------------------------------------------------------
-# 3. Spring API 호출 (목표 조회)
+# 3. 사용자 목표 조회
 # ------------------------------------------------------------
 def get_user_goal(user_id: int):
-    url = f"{SPRING_URL}/api/goal/{user_id}"
-    response = requests.get(url)
+    conn = get_connection()
+    query = f"""
+        SELECT 
+            CALORIES_KCAL AS goal_calories,
+            PROTEIN_G AS goal_protein,
+            CARBS_G AS goal_carbs,
+            FATS_G AS goal_fat
+        FROM USER_GOAL
+        WHERE USER_ID = {user_id}
+    """
+    df = pd.read_sql(query, conn)
+    conn.close()
 
-    if response.status_code != 200:
-        raise Exception("Spring 서버에서 사용자 목표를 가져오지 못했습니다.")
-
-    return response.json()
+    return df.to_dict(orient="records")[0] if not df.empty else None
 
 
 # ------------------------------------------------------------
-# 4. Spring API 호출 (오늘 섭취량 조회)
+# 4. 오늘 섭취량 조회
 # ------------------------------------------------------------
 def get_today_nutrition(user_id: int):
-    url = f"{SPRING_URL}/api/nutrition/today/{user_id}"
-    response = requests.get(url)
+    conn = get_connection()
+    query = f"""
+        SELECT 
+            SUM(calories_kcal) AS calories,
+            SUM(carbs_g) AS carbs,
+            SUM(protein_g) AS protein,
+            SUM(fat_g) AS fat,
+            SUM(fiber_g) AS fiber,
+            SUM(sodium_mg) AS sodium
+        FROM MEAL_ENTRY
+        WHERE USER_ID = {user_id}
+          AND DATE(EAT_DATE) = CURDATE()
+    """
+    df = pd.read_sql(query, conn)
+    conn.close()
 
-    if response.status_code != 200:
-        raise Exception("Spring 서버에서 오늘 섭취량을 가져오지 못했습니다.")
-
-    return response.json()
+    return df.to_dict(orient="records")[0]
 
 
 # ------------------------------------------------------------
-# 5. 목표 대비 부족 분석 함수
+# 5. 부족 비율 계산
 # ------------------------------------------------------------
 def detect_deficit_by_goal(goal, current):
     deficit_list = []
@@ -77,29 +106,24 @@ def detect_deficit_by_goal(goal, current):
     fat_rate     = ratio(current["fat"], goal["goal_fat"])
     cal_rate     = ratio(current["calories"], goal["goal_calories"])
 
-    # 1) 단백질
     if protein_rate < 0.3:
         deficit_list.append("high_protein")
     elif protein_rate < 0.6:
         deficit_list.append("mid_protein")
 
-    # 2) 식이섬유
     if current["fiber"] < 20:
         deficit_list.append("high_fiber")
 
-    # 3) 탄수화물
     if carbs_rate < 0.3:
         deficit_list.append("high_carbs")
     elif carbs_rate < 0.6:
         deficit_list.append("mid_carbs")
 
-    # 4) 지방
     if fat_rate < 0.3:
         deficit_list.append("high_fat")
     elif fat_rate < 0.6:
         deficit_list.append("mid_fat")
 
-    # 5) 칼로리
     if cal_rate < 0.3:
         deficit_list.append("high_calorie")
     elif cal_rate < 0.6:
@@ -109,7 +133,14 @@ def detect_deficit_by_goal(goal, current):
 
 
 # ------------------------------------------------------------
-# 6. 음식 추천 로직
+# 6. 모델 및 음식 DB 로드
+# ------------------------------------------------------------
+df_food = load_food_data()
+model = joblib.load("food_recommend_model.pkl")
+
+
+# ------------------------------------------------------------
+# 7. 추천 로직
 # ------------------------------------------------------------
 def recommend_menu(goal, current, df):
     df_filtered = filter_processed(df)
@@ -117,14 +148,11 @@ def recommend_menu(goal, current, df):
     deficit = detect_deficit_by_goal(goal, current)
     cluster_target = map_deficit_to_cluster(deficit)
 
-    # 부족 없음 → 랜덤 추천
     if cluster_target is None:
         return df_filtered.sample(5)[["food_name", "category"]].to_dict(orient="records")
 
-    # 해당 클러스터 추천
     recommended = df_filtered[df_filtered["cluster"] == cluster_target]
 
-    # 데이터 부족 시 랜덤
     if len(recommended) < 5:
         recommended = df_filtered.sample(5)
 
@@ -132,22 +160,29 @@ def recommend_menu(goal, current, df):
 
 
 # ------------------------------------------------------------
-# 7. FastAPI 엔드포인트
+# 8. FastAPI 엔드포인트
 # ------------------------------------------------------------
+class RecommendRequest(BaseModel):
+    user_id: int
+
+
 @app.post("/food/recommend")
 def recommend(request: RecommendRequest):
 
-    # 1) 목표 조회
     goal = get_user_goal(request.user_id)
+    if goal is None:
+        return {"error": f"{request.user_id}번 사용자의 목표 데이터가 없습니다."}
 
-    # 2) 오늘 섭취량 조회
     current = get_today_nutrition(request.user_id)
+    if current is None or current["calories"] is None:
+        return {"error": f"{request.user_id}번 사용자의 오늘 섭취 기록이 없습니다."}
 
-    # 3) 추천 수행
     result = recommend_menu(goal, current, df_food)
 
     return {
         "user_id": request.user_id,
+        "goal": goal,
+        "current": current,
         "deficit": detect_deficit_by_goal(goal, current),
         "recommended": result
     }

@@ -21,6 +21,12 @@ public class FoodRecommendController {
         FoodRecommendRequest req = new FoodRecommendRequest();
         req.setUser_id(userId);
 
-        return foodRecommendService.getFoodRecommend(req);
+        FoodRecommendResponse result = foodRecommendService.getFoodRecommend(req);
+
+        if (result == null) {
+            throw new RuntimeException("식단 추천 서버(FastAPI) 응답 실패");
+        }
+
+        return result;
     }
 }
