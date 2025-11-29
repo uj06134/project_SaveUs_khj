@@ -629,7 +629,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="modal-comment-input">
                         <input type="text" placeholder="댓글 달기..." data-post-id="${post.postId}" id="modal-comment-input-field">
-                        <button class="comment-submit-btn" data-post-id="${post.postId}"><i class="fi fi-rr-paper-plane"></i></button>
+                        <button class="modal-comment-submit-btn" data-post-id="${post.postId}"><i class="fi fi-rr-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
@@ -981,7 +981,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const submitBtn = e.target.closest('#modal-comment-submit-btn');
+            const submitBtn = e.target.closest('.modal-comment-submit-btn');
             if (submitBtn) {
                 e.preventDefault();
                 const postId = submitBtn.dataset.postId;
@@ -1020,7 +1020,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 e.preventDefault();
 
-                const submitBtn = modal.querySelector('#modal-comment-submit-btn');
+                const submitBtn = modal.querySelector('.modal-comment-submit-btn');
                 if (submitBtn && !submitBtn.disabled) {
                     submitBtn.click();
                 }

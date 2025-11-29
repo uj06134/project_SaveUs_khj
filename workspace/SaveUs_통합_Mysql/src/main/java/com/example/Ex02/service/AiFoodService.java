@@ -4,6 +4,7 @@ import com.example.Ex02.dto.AiDto;
 import com.example.Ex02.dto.AiResponseWrapper;
 import com.example.Ex02.dto.DiabetesScoreDto;
 import com.example.Ex02.dto.MealSaveDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,8 @@ public class AiFoodService {
 
     private final RestTemplate restTemplate = new RestTemplate();
     // 파이썬 서버 주소 확인 필요 (localhost:8000 인지 등)
-    private final String FASTAPI_URL = "http://127.0.0.1:8000/food/detect";
-
+    @Value("${app.base-url}:8000/food/detect")
+    private String fastApiUrl;
 
     public List<MealSaveDto> analyzeImage(MultipartFile file) {
         List<MealSaveDto> resultList = new ArrayList<>(); // 결과를 담을 리스트
@@ -37,7 +38,7 @@ public class AiFoodService {
                     new HttpEntity<>(body, headers);
 
             ResponseEntity<AiResponseWrapper> response = restTemplate.postForEntity(
-                    FASTAPI_URL, requestEntity, AiResponseWrapper.class
+                    fastApiUrl, requestEntity, AiResponseWrapper.class
             );
 
             if (response.getBody() != null && !response.getBody().getItems().isEmpty()) {
