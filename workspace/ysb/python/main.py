@@ -8,18 +8,6 @@ import os
 app = FastAPI()
 
 
-"""
-from app.routes.food import router as food_router
-from app.routes.user import router as user_router
-
-app = FastAPI()
-
-app.include_router(food_router)
-app.include_router(user_router)
-"""
-
-
-
 app.include_router(food_router)
 
 app.add_middleware(
@@ -29,7 +17,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
-
 
 if __name__ == "__main__":
     import uvicorn

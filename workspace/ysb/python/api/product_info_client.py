@@ -28,8 +28,8 @@ class ProductInfoClient:
         rows = response.get("C005", {}).get("row", [])
         if rows:
             for row in sorted(rows, key=lambda d: d.get("PRMS_DT", ""), reverse=True):
-                if (product_name:=row.get("PRDLST_NM")) and (product_number := row.get("PRDLST_REPORT_NO")):
-                    return product_name, product_number
+                if product_number := row.get("PRDLST_REPORT_NO"):
+                    return product_number
         return None
 
 
