@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body>
+<body th:attr="data-user-id=${userId}">
 
 <main class="page-content" layout:fragment="content">
 
@@ -17,8 +17,10 @@
         <h2>건강 리포트</h2>
     </div>
 
+    <!-- 1. 오늘 기록 기반 분석 3종 -->
     <div class="dashboard-grid grid-3" id="dailySection">
 
+        <!-- 레이더 차트 -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">권장 섭취량 대비 분석</div>
@@ -32,6 +34,7 @@
             </div>
         </div>
 
+        <!-- 당뇨 위험도 -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">식단 당뇨 위험도 분석</div>
@@ -61,10 +64,10 @@
             </div>
         </div>
 
+        <!-- 영양 위험도 -->
         <div class="card">
             <div class="card-header">
-                <div class="card-title">영양 위험도</div>
-                <!--<input type="date" id="obesityDate" class="date-picker-small">-->
+                <div class="card-title">영양 균형 점수</div>
             </div>
 
             <div class="card-flex-content">
@@ -90,50 +93,75 @@
 
     </div>
 
+
     <hr class="section-divider">
 
+    <!-- 2. 운동 추천 + 자주먹는 음식 -->
     <div class="dashboard-grid">
 
+        <!-- 운동 추천 -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">
                     오늘의 맞춤 운동 추천
                     <div class="tooltip">?
                         <span class="tooltip-text">
-                            이 추천은 사용자의 기본 정보(BMI, 연령, 성별 등)와<br>
-                            AI 분석 기반 운동군 분류에 따라 생성된 루틴입니다.<br><br>
-                            * 준비운동 → 본운동 → 정리운동 순서로 구성됩니다.<br>
-                            * 매일 새롭게 추천되며, 신체 부하를 고려해 구성됩니다.
-                        </span>
+                        사용자의 기본 정보(BMI, 연령, 성별 등) 기반<br>
+                        AI 분석에 따라 자동 생성된 루틴입니다.<br><br>
+                        * 준비운동 → 본운동 → 정리운동 순서<br>
+                        * 매일 새롭게 추천됩니다.
+                    </span>
                     </div>
                 </div>
             </div>
 
             <div class="card-flex-content" id="exerciseContent">
-                <div class="content-center">
-                    <div class="exercise-block">
-                        <h4 class="exercise-title">준비운동</h4>
-                        <p id="exercisePrep" th:text="${data.routine.준비운동}">-</p>
-                    </div>
 
-                    <div class="exercise-block">
-                        <h4 class="exercise-title">본운동</h4>
-                        <ul id="exerciseMain">
-                            <li th:each="item : ${data.routine.본운동}"
-                                th:text="${item}">
-                            </li>
-                        </ul>
-                    </div>
+                <!-- 기준 exerciseCard fragment -->
+                <th:block th:fragment="exerciseCard(title, item)">
+                    <div class="exercise-block" th:if="${item != null}">
+                        <h4 class="exercise-title" th:text="${title}"></h4>
 
-                    <div class="exercise-block">
-                        <h4 class="exercise-title">정리운동</h4>
-                        <p id="exerciseCool" th:text="${data.routine.정리운동}">-</p>
+                        <div class="exercise-card">
+
+                            <div th:if="${item.thumb != null}" class="exercise-thumbnail">
+                                <img th:src="${item.thumb}" alt="운동 영상 썸네일"/>
+                            </div>
+
+                            <div th:unless="${item.thumb != null}" class="exercise-thumbnail placeholder">
+                                <img th:src="@{/images/icon/no_video.png}" alt="영상 없음 이미지"/>
+                            </div>
+
+                            <div class="exercise-info">
+                                <p class="exercise-name" th:text="${item.name}"></p>
+
+                                <a th:if="${item.url != null}"
+                                   th:href="${item.url}"
+                                   class="exercise-btn primary-btn"
+                                   target="_blank">
+                                    영상 보기 ▶
+                                </a>
+
+                                <p th:if="${item.url == null}" class="no-video-text">
+                                    영상 없음
+                                </p>
+                            </div>
+                        </div>
                     </div>
+                </th:block>
+
+                <!-- 실제 운동 3종 표시 -->
+                <div class="exercise-row">
+                    <div th:insert="~{::exerciseCard('준비운동', ${data.routine.warmup})}"></div>
+                    <div th:insert="~{::exerciseCard('본운동', ${data.routine.main})}"></div>
+                    <div th:insert="~{::exerciseCard('정리운동', ${data.routine.cool})}"></div>
                 </div>
-                <p class="chart-caption">* AI 분석 기반 맞춤형 운동 루틴입니다.</p>
+
+                <p class="chart-caption">* AI 기반 맞춤형 운동 루틴입니다.</p>
             </div>
         </div>
 
+        <!-- TOP 5 자주 먹는 음식 -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">자주 먹는 음식 TOP 5</div>
@@ -147,7 +175,10 @@
 
     <h3 class="section-title">최근 건강 트렌드 (최근 30일)</h3>
 
+    <!-- 3. 최근 건강 트렌드(30일) -->
     <div class="dashboard-grid" id="commonSection">
+
+        <!-- 건강 점수 -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">최근 건강 점수 추이</div>
@@ -158,6 +189,7 @@
             </div>
         </div>
 
+        <!-- BMI -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">BMI & 체중 변화</div>
@@ -166,11 +198,15 @@
                 <canvas id="bmiChart"></canvas>
             </div>
         </div>
+
     </div>
 
-    <div class="card" style="margin-top: 24px;"> <div class="card-header">
-        <div class="card-title">3대 영양소 밸런스 변화</div>
-    </div>
+    <!-- 영양소 변화 3종 -->
+    <div class="card" style="margin-top: 24px;">
+        <div class="card-header">
+            <div class="card-title">3대 영양소 밸런스 변화</div>
+        </div>
+
         <div class="nutrient-row">
             <div class="nutrient-item">
                 <canvas id="carbChart"></canvas>
@@ -189,5 +225,6 @@
 <th:block layout:fragment="script">
     <script th:src="@{/js/report.js}"></script>
 </th:block>
+
 </body>
 </html>

@@ -237,11 +237,15 @@
         USER_ID,
         SCORE,
         SIMILARITY,
-        RISK_LEVEL AS riskLevel,  CREATED_AT AS createdAt
-        FROM DIABETES_SCORE
-        WHERE USER_ID = #{userId} AND DATE(CREATED_AT) = #{date}
-        ORDER BY CREATED_AT DESC LIMIT 1
+        RISK_LEVEL AS riskLevel,
+        CREATED_AT AS createdAt
+        FROM diabetes_score
+        WHERE USER_ID = #{userId}
+        AND DATE(CREATED_AT) = #{date}
+        ORDER BY CREATED_AT DESC
+        LIMIT 1
     </select>
+
 
     <!-- 특정 날짜 건강점수 삭제 -->
     <delete id="deleteDailyScore">

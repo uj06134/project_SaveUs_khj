@@ -13,14 +13,10 @@ public class ExerciseRecommendService {
 
     public ExerciseRecommendResponseDto getExerciseRecommend(int userId) {
 
-        // FastAPI 서버 URL
         String url = "http://3.37.90.119:8003/recommend/" + userId;
 
 
-        // FastAPI에서 JSON을 받아 DTO로 매핑
-        ExerciseRecommendResponseDto response =
-                restTemplate.getForObject(url, ExerciseRecommendResponseDto.class);
 
-        return response;
+        return restTemplate.getForObject(url, ExerciseRecommendResponseDto.class);
     }
 }

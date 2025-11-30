@@ -1,4 +1,5 @@
 package com.example.Ex02.controller;
+
 import com.example.Ex02.dto.DailyIntakeDto;
 import com.example.Ex02.dto.ExerciseRecommendResponseDto;
 import com.example.Ex02.dto.UserGoalDto;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/report")
@@ -39,28 +42,45 @@ public class ReportController {
 
     @GetMapping
     public String showReportPage(HttpSession session, Model model) {
+
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return "redirect:/login";
         }
 
-        //식단 저장시 점수도 계산해서 db에 저장 혹은 업데이트
-        DailyIntakeDto dailyIntake = dailyIntakeMapper.findDailyIntake(userId).get(0);
-        System.out.println("dailyIntake:"+dailyIntake);
-        UserGoalDto userGoal = userGoalMapper.findUserGoal(userId);
-        System.out.println("userGoal:"+userGoal);
-        long score = healthScoreService.calculateDailyScore(dailyIntake,userGoal);
-        healthScoreMapper.updateScoreByUserId(userId,new java.sql.Date(System.currentTimeMillis()),score);
+        // 1) 오늘 식단 기록 조회
+        List<DailyIntakeDto> intakeList = dailyIntakeMapper.findDailyIntake(userId);
 
-        //체중 업데이트 bmi그래프
+        if (intakeList != null && !intakeList.isEmpty()) {
+            DailyIntakeDto dailyIntake = intakeList.get(0);
+            UserGoalDto userGoal = userGoalMapper.findUserGoal(userId);
+
+            long score = healthScoreService.calculateDailyScore(dailyIntake, userGoal);
+            healthScoreMapper.updateScoreByUserId(
+                    userId,
+                    new java.sql.Date(System.currentTimeMillis()),
+                    score
+            );
+        } else {
+            System.out.println("[INFO] 오늘 식단 기록 없음 → 점수 계산 생략");
+        }
+
+        // 2) 체중 있는 경우만 BMI 업데이트
         Double currentWeight = challengeMapper.getUserWeight(userId);
-        healthScoreMapper.updateWeightByUserId(userId, new java.sql.Date(System.currentTimeMillis()),currentWeight);
+        if (currentWeight != null) {
+            healthScoreMapper.updateWeightByUserId(
+                    userId,
+                    new java.sql.Date(System.currentTimeMillis()),
+                    currentWeight
+            );
+        }
 
-        // 운동 추천
+        // 3) 운동 추천 데이터
         ExerciseRecommendResponseDto exerciseData =
                 exerciseRecommendService.getExerciseRecommend(Math.toIntExact(userId));
 
-        model.addAttribute("data", exerciseData);   // ← report.html에서 ${data.xxx} 로 사용됨
+        model.addAttribute("userId", userId);
+        model.addAttribute("data", exerciseData);
 
         return "report";
     }
