@@ -21,7 +21,7 @@ public class ReportDto {
     private List<Integer> radarMyIntake; // 나의 섭취 %
     private List<Integer> radarGoal;     // 권장 섭취 %
 
-    // 비만 위험도
+    // 영양 균형 위험도
     private double obesityProbability;   // 0 ~ 100
 
     // 당뇨 예측 결과

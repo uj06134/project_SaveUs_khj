@@ -69,36 +69,45 @@ public class ReportService {
         report.setAverageScore(scores.isEmpty() ? 0 : sumScore / scores.size());
 
         // 식단 유형 변화 (최근 30일)
+        // 안전하게 dailyList 가져오기
         List<DailyIntakeDto> dailyList = dailyIntakeMapper.findDailyIntake(userId);
+        if (dailyList == null || dailyList.isEmpty()) {
+            // 빈 그래프로 응답 (정상)
+            report.setDietDates(Collections.emptyList());
+            report.setCarbCodes(Collections.emptyList());
+            report.setProteinCodes(Collections.emptyList());
+            report.setFatCodes(Collections.emptyList());
+            // 아래 로직 생략
+        } else {
+            List<String> dDates = new ArrayList<>();
+            List<Integer> cCodes = new ArrayList<>();
+            List<Integer> pCodes = new ArrayList<>();
+            List<Integer> fCodes = new ArrayList<>();
 
-        List<String> dDates = new ArrayList<>();
-        List<Integer> cCodes = new ArrayList<>();
-        List<Integer> pCodes = new ArrayList<>();
-        List<Integer> fCodes = new ArrayList<>();
+            int startIdx = Math.max(0, dailyList.size() - 30);
 
-        int startIdx = Math.max(0, dailyList.size() - 30);
-        for (int i = startIdx; i < dailyList.size(); i++) {
-            DailyIntakeDto day = dailyList.get(i);
-            dDates.add(day.getEatDate().format(DateTimeFormatter.ofPattern("MM/dd")));
+            for (int i = startIdx; i < dailyList.size(); i++) {
+                DailyIntakeDto day = dailyList.get(i);
+                if (day == null) continue; // null 요소 방어
 
-            // 총 칼로리 계산 (DB에 있으면 그거 쓰고, 없으면 계산)
-            int totalKcal = (day.getCarbs() * 4) + (day.getProtein() * 4) + (day.getFats() * 9);
+                dDates.add(day.getEatDate().format(DateTimeFormatter.ofPattern("MM/dd")));
 
-            // 비율 계산
-            double cPct = calcNutrientPercent(day.getCarbs(), 4, totalKcal);
-            double pPct = calcNutrientPercent(day.getProtein(), 4, totalKcal);
-            double fPct = calcNutrientPercent(day.getFats(), 9, totalKcal);
+                int totalKcal = (day.getCarbs() * 4) + (day.getProtein() * 4) + (day.getFats() * 9);
 
-            // 코드 저장
-            cCodes.add(getCarbLevel(cPct));
-            pCodes.add(getProteinLevel(pPct));
-            fCodes.add(getFatLevel(fPct));
+                double cPct = calcNutrientPercent(day.getCarbs(), 4, totalKcal);
+                double pPct = calcNutrientPercent(day.getProtein(), 4, totalKcal);
+                double fPct = calcNutrientPercent(day.getFats(), 9, totalKcal);
+
+                cCodes.add(getCarbLevel(cPct));
+                pCodes.add(getProteinLevel(pPct));
+                fCodes.add(getFatLevel(fPct));
+            }
+
+            report.setDietDates(dDates);
+            report.setCarbCodes(cCodes);
+            report.setProteinCodes(pCodes);
+            report.setFatCodes(fCodes);
         }
-
-        report.setDietDates(dDates);
-        report.setCarbCodes(cCodes);
-        report.setProteinCodes(pCodes);
-        report.setFatCodes(fCodes);
 
         // 자주 먹은 음식 Top 5
         report.setTopMeals(mealMapper.selectTop5Meals(userId));

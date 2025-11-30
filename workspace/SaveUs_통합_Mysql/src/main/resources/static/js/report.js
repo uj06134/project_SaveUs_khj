@@ -496,3 +496,68 @@ function updateCommonCharts(data) {
         ul.innerHTML = '<p style="color:#999; text-align:center; padding: 20px;">아직 식사 기록이 충분하지 않습니다.</p>';
     }
 }
+// -------------------------- 운동 추천 기능 추가 --------------------------
+
+function loadExerciseRecommend() {
+    const userIdEl = document.querySelector("body").getAttribute("data-user-id");
+    let userId = userIdEl ? userIdEl : null;
+
+    if (!userId) {
+        console.warn("운동 추천: userId 없음");
+        return;
+    }
+
+    fetch(`/exercise/recommend/${userId}`)
+        .then(res => res.json())
+        .then(data => renderExerciseSection(data))
+        .catch(err => console.error("Exercise load error:", err));
+}
+
+function renderExerciseSection(data) {
+    const warmup = data.routine?.warmup;
+    const main = data.routine?.main;
+    const cool = data.routine?.cool;
+
+    const warmupBox = document.querySelector(".exercise-row > div:nth-child(1)");
+    const mainBox = document.querySelector(".exercise-row > div:nth-child(2)");
+    const coolBox = document.querySelector(".exercise-row > div:nth-child(3)");
+
+    renderExerciseCard(warmupBox, warmup, "준비운동");
+    renderExerciseCard(mainBox, main, "본운동");
+    renderExerciseCard(coolBox, cool, "정리운동");
+}
+
+function renderExerciseCard(container, item, title) {
+    if (!container) return;
+
+    if (!item) {
+        container.innerHTML = `
+            <div class="exercise-block">
+                <h4 class="exercise-title">${title}</h4>
+                <div class="exercise-card placeholder">
+                    <p class="no-video-text">추천 데이터 없음</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="exercise-block">
+            <h4 class="exercise-title">${title}</h4>
+            <div class="exercise-card">
+                <div class="exercise-thumbnail">
+                    <img src="${item.thumb || '/images/icon/no_video.png'}" alt="영상 썸네일"/>
+                </div>
+                <div class="exercise-info">
+                    <p class="exercise-name">${item.name}</p>
+                    ${
+                        item.url
+                            ? `<a href="${item.url}" class="exercise-btn primary-btn" target="_blank">영상 보기 ▶</a>`
+                            : `<p class="no-video-text">영상 없음</p>`
+                    }
+                </div>
+            </div>
+        </div>
+    `;
+}

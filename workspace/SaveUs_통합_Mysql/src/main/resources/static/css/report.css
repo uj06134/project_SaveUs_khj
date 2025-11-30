@@ -356,28 +356,17 @@ canvas { width: 100% !important; height: 100% !important; }
 .nutrient-row {
     display: flex;
     justify-content: space-between;
-    gap: 20px;       /* 그래프 사이 간격 */
-    height: 250px;   /* 그래프 높이 설정 */
+    gap: 20px;
+    height: 250px;
     padding: 10px 0;
 }
 
 .nutrient-item {
-    flex: 1;         /* 3등분 */
+    flex: 1;
     position: relative;
-    min-width: 0;    /* flex 자식 요소 overflow 방지 */
+    min-width: 0;
 }
 
-
-#exerciseContent .content-center {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: stretch;
-    width: 100%;
-    gap: 12px;
-    height: 140px;
-    padding: 10px 0;
-}
 
 .exercise-block {
     flex: 1;                   /* 3등분 */
@@ -442,4 +431,129 @@ canvas { width: 100% !important; height: 100% !important; }
 }
 .exercise-block ul li {
     margin-bottom: 2px;
+}
+
+
+/*이정륜*/
+/* report.css 파일의 모든 exercise-row 정의를 아래 코드로 대체 */
+
+/* ========================================================= */
+/* 운동 추천 섹션 스타일 (수정 및 통합) */
+/* ========================================================= */
+#exerciseContent {
+    height: 100%;
+}
+
+/* 가로 3개 배치 */
+.exercise-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.exercise-row > div {
+    flex: 1 0 0;
+    min-width: 0;
+    height: 100%;
+}
+
+/* 운동 카드 박스 */
+.exercise-block {
+    flex: 1;
+    background-color: #F8F9FA;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 15px 20px 15px;
+    gap: 8px;
+    transition: transform 0.2s;
+    min-width: 0;
+    height: 100%;
+}
+
+/* 썸네일 16:9 */
+.exercise-thumbnail {
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F0F0F0;
+}
+
+/* 이미지 */
+.exercise-thumbnail img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 70%;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    background-color: transparent;
+}
+
+/* 카드 내부 */
+.exercise-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.exercise-info {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+.exercise-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+/* 버튼 */
+.exercise-btn.primary-btn {
+    display: inline-block;
+    background-color: var(--primary);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: 0.2s;
+    border: none;
+    box-shadow: 0 2px 5px rgba(32, 201, 151, 0.2);
+}
+
+.exercise-btn.primary-btn:hover {
+    background-color: var(--secondary);
+    transform: translateY(-1px);
+}
+
+/* 영상 없음 블럭 */
+.no-video-text {
+    font-size: 13px;
+    color: #888;
+    margin-top: 6px;
 }
